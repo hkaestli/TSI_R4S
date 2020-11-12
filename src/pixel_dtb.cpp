@@ -252,9 +252,9 @@ void CTestboard::r4s_SetSeqCalScan()
 void CTestboard::r4s_SetSeqMeasureValue()
 {
     vector<uint32_t> prog(3);
-    prog[ 0] = 0xefefefe5;
-    prog[ 1] = 0xefefefef;
-    prog[ 2] = 0x0fefef;
+    prog[ 0] = 0xe5e5e5e5;
+    prog[ 1] = 0xe5e5e5e5;
+    prog[ 2] = 0x0fe5e5;
     r4s_SetSequence(prog);
 }
 

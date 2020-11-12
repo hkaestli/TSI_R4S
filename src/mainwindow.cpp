@@ -133,17 +133,14 @@ void MainWindow::on_unzoom_y_clicked()
 
 void MainWindow::on_image_clicked()
 {
-    /*
-    DACScan(0,0,1000,100);
-    printf("Data size= %d\n",(int) data.size());
-    */
     if(running){
         running=false;
         ui->loop->setText("Loop");
         ui->loop->setChecked(false);
         timer->stop();
     }
-    onTimeout();
+    DACScan(0,0,1000,100);  printf("Data size= %d\n",(int) data.size());
+ //   onTimeout();
 }
 
 void MainWindow::onTimeout()
@@ -198,7 +195,6 @@ void MainWindow::GetFrame()
     tb.r4s_Enable(0);
 
     tb.Daq_Read(data);
-
     tb.Daq_Close();
     tb.Flush();
 }
@@ -271,10 +267,17 @@ void MainWindow::on_rowwise_clicked()
 
 void MainWindow::DACScan(int DAC, int start, int stop, int step)
 {
+    tb.r4s_SetPixCal(2,2);
+    vector<uint32_t> prog(1);
+    prog[ 0] = 0x054321;
+    tb.r4s_SetSequence(prog);
+    tb.r4s_Start();
+    tb.uDelay(3000);
+    tb.Flush();
 
     uint8_t roMode = 3;
     tb.Daq_Open(50000);
-
+    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     // prepare ADC
     tb.r4s_AdcDelay(7);
     tb.r4s_Enable(roMode);
