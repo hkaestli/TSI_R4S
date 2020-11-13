@@ -267,7 +267,9 @@ void MainWindow::on_rowwise_clicked()
 
 void MainWindow::DACScan(int DAC, int start, int stop, int step)
 {
+    // programm pixel
     tb.r4s_SetPixCal(2,2);
+    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
     prog[ 0] = 0x054321;
     tb.r4s_SetSequence(prog);
@@ -275,9 +277,10 @@ void MainWindow::DACScan(int DAC, int start, int stop, int step)
     tb.uDelay(3000);
     tb.Flush();
 
+    // DAC scan
     uint8_t roMode = 3;
     tb.Daq_Open(50000);
-    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
+
     // prepare ADC
     tb.r4s_AdcDelay(7);
     tb.r4s_Enable(roMode);
