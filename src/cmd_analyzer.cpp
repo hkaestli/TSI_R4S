@@ -79,7 +79,7 @@ void R4sImg::Print(unsigned int count)
 
 void R4sImg::Save(FILE *f)
 {
-	int i = 0, x, y;
+    int x, y;
 
 	for (y = IMG_HEIGHT - 1; y >= 0; y--)
 	{
@@ -103,6 +103,7 @@ void R4sImg::Save(const string &filename)
 	fclose(f);
 }
 
+void SetDAC(int DAC, int value);
 
 void ReadImage(R4sImg &map)
 {
@@ -127,7 +128,6 @@ void ReadImage(R4sImg &map)
 	vector<uint16_t> data;
 	unsigned int ret = tb.Daq_Read(data);
 
-	unsigned int n = data.size();
 	printf("--- status = %u; n = %u\n", ret, (unsigned int)(data.size()));
 
 	tb.Daq_Close();
@@ -218,6 +218,68 @@ CMD_PROC(yscan)
 
 CMD_PROC(dacscan)
 {
+    std::vector<uint16_t> data;
+    int DAC,start, stop, step=1;
+    PAR_INT(DAC, 0, 21);
+    PAR_INT(start, 0, 10000);
+    PAR_INT(stop, 0, 10000);
+    // programm pixel
+    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
+    vector<uint32_t> prog(1);
+    prog[ 0] = 0x054321;
+    tb.r4s_SetSequence(prog);
+    tb.r4s_Start();
+    tb.uDelay(3000);
+    tb.Flush();
+
+    // DAC scan
+    uint8_t roMode = 3;
+    tb.Daq_Open(50000);
+
+    // prepare ADC
+    tb.r4s_AdcDelay(7);
+    tb.r4s_Enable(roMode);
+    tb.uDelay(400);
+
+    tb.r4s_SetSeqMeasureValue();
+    tb.Daq_Start();
+
+    for(int i=start; i<stop; i+=step)
+    {
+        SetDAC(DAC, i);
+        // take data
+        tb.r4s_Start();
+        tb.uDelay(3000);
+        tb.Flush();
+    }
+
+    tb.Daq_Stop();
+    // stop ADC
+    tb.r4s_Enable(0);
+    tb.Daq_Read(data);
+    tb.Daq_Close();
+    tb.Flush();
+
+    int n=0;
+    for(int i=start; i<stop; i+=step)
+    {
+        double mean=0;
+        for (int j=0; j<10; j++) {
+            int value = (int) data[10*n+j];
+            if ((value & 0x1000) != 0) // ADC overrange
+                   value = -5000;
+            else if ((value & 0x0800) != 0) // negative
+                    value -= 0x1000;
+            mean+=(double)value;
+        }
+        mean=mean/10.0;
+        printf("%d : %f\n",i,mean);
+        n++;
+    }
+}
+/*
+CMD_PROC(dacscan)
+{
     int x,y;
     PAR_INT(x, 0, 40);
     PAR_INT(y, 0, 20);
@@ -246,7 +308,7 @@ CMD_PROC(dacscan)
         DO_FLUSH
     }
 }
-
+*/
 
 CMD_PROC(seqtest)
 {
@@ -292,7 +354,7 @@ CMD_PROC(takedata)
 		tb.Daq_Stop();
 
 		// read DTB data buffer
-		unsigned int ret = tb.Daq_Read(data);
+        tb.Daq_Read(data);
 
 		map.CreateRaw(data);
 
@@ -311,4 +373,77 @@ CMD_PROC(takedata)
 	fclose(f);
 
 	DO_FLUSH
+}
+
+
+void SetDAC(int DAC, int value)
+{
+    switch(DAC){
+       case VanaN:
+          tb.r4s_SetVana_n((uint16_t) value);
+          break;
+       case VanaP:
+          tb.r4s_SetVana_p((uint16_t) value);
+          break;
+       case Vdig:
+          tb.r4s_SetVdig((uint16_t) value);
+          break;
+       case VDDIO:
+          tb.r4s_SetVddio((uint16_t) value);
+          break;
+       case V18:
+          tb.r4s_SetV18((uint16_t) value);
+          break;
+       case BiasD:
+          tb.r4s_SetVbias_d((uint16_t) value);
+          break;
+       case BiasR:
+          tb.r4s_SetVbias_r((uint16_t) value);
+          break;
+    case VcascN:
+       tb.r4s_SetVcasc_n((uint16_t) value);
+       break;
+    case Vn0:
+       tb.r4s_SetVn0((uint16_t) value);
+       break;
+    case Vn1:
+       tb.r4s_SetVn1((uint16_t) value);
+       break;
+    case Vn2:
+       tb.r4s_SetVn2((uint16_t) value);
+       break;
+    case Vfb:
+       tb.r4s_SetVfb((uint16_t) value);
+       break;
+    case Vprfb:
+       tb.r4s_SetVprefb((uint16_t) value);
+       break;
+    case VcascP:
+       tb.r4s_SetVcasc_p((uint16_t) value);
+       break;
+    case Vp0:
+       tb.r4s_SetVp0((uint16_t) value);
+       break;
+    case Vp1:
+       tb.r4s_SetVp1((uint16_t) value);
+       break;
+    case Vp2:
+       tb.r4s_SetVp2((uint16_t) value);
+       break;
+    case Vcal:
+       tb.r4s_SetVcal((uint16_t) value);
+       break;
+    case Hold:
+       tb.r4s_SetMeasureHold((uint16_t) value);
+       break;
+    case IBiasRO:
+       tb.r4s_SetIbiasro((uint16_t) value);
+       break;
+    case IBiasIO:
+       tb.r4s_SetIbiasio((uint16_t) value);
+       break;
+    case VOffset:
+       tb.r4s_SetVoffset((uint16_t) value);
+       break;
+    }
 }

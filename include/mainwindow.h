@@ -11,6 +11,10 @@ namespace Ui {
 class MainWindow;
 }
 
+enum DACs{VanaN, VanaP, Vdig, VDDIO, V18, BiasD, BiasR, VcascN, Vn0, Vn1, Vn2,
+          Vfb, Vprfb, VcascP, Vp0, Vp1, Vp2, Vcal, Hold, IBiasRO, IBiasIO, VOffset};
+
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -43,6 +47,7 @@ private slots:
 
 private:
     void GetFrame();
+    void SetDAC(int DAC, int value);
 
 
 private:

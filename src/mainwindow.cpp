@@ -139,7 +139,7 @@ void MainWindow::on_image_clicked()
         ui->loop->setChecked(false);
         timer->stop();
     }
-    DACScan(0,0,1000,100);  printf("Data size= %d\n",(int) data.size());
+    DACScan(Hold,2500,2550,1);
  //   onTimeout();
 }
 
@@ -268,7 +268,6 @@ void MainWindow::on_rowwise_clicked()
 void MainWindow::DACScan(int DAC, int start, int stop, int step)
 {
     // programm pixel
-    tb.r4s_SetPixCal(2,2);
     tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
     prog[ 0] = 0x054321;
@@ -291,6 +290,7 @@ void MainWindow::DACScan(int DAC, int start, int stop, int step)
 
     for(int i=start; i<stop; i+=step)
     {
+        SetDAC(DAC, i);
         // take data
         tb.r4s_Start();
         tb.uDelay(3000);
@@ -322,4 +322,76 @@ void MainWindow::DACScan(int DAC, int start, int stop, int step)
     }
     if(columnwise) tb.r4s_SetSeqMeasureColumnReadout();
     else tb.r4s_SetSeqMeasureReadout();
+}
+
+void MainWindow::SetDAC(int DAC, int value)
+{
+    switch(DAC){
+       case VanaN:
+          tb.r4s_SetVana_n((uint16_t) value);
+          break;
+       case VanaP:
+          tb.r4s_SetVana_p((uint16_t) value);
+          break;
+       case Vdig:
+          tb.r4s_SetVdig((uint16_t) value);
+          break;
+       case VDDIO:
+          tb.r4s_SetVddio((uint16_t) value);
+          break;
+       case V18:
+          tb.r4s_SetV18((uint16_t) value);
+          break;
+       case BiasD:
+          tb.r4s_SetVbias_d((uint16_t) value);
+          break;
+       case BiasR:
+          tb.r4s_SetVbias_r((uint16_t) value);
+          break;
+    case VcascN:
+       tb.r4s_SetVcasc_n((uint16_t) value);
+       break;
+    case Vn0:
+       tb.r4s_SetVn0((uint16_t) value);
+       break;
+    case Vn1:
+       tb.r4s_SetVn1((uint16_t) value);
+       break;
+    case Vn2:
+       tb.r4s_SetVn2((uint16_t) value);
+       break;
+    case Vfb:
+       tb.r4s_SetVfb((uint16_t) value);
+       break;
+    case Vprfb:
+       tb.r4s_SetVprefb((uint16_t) value);
+       break;
+    case VcascP:
+       tb.r4s_SetVcasc_p((uint16_t) value);
+       break;
+    case Vp0:
+       tb.r4s_SetVp0((uint16_t) value);
+       break;
+    case Vp1:
+       tb.r4s_SetVp1((uint16_t) value);
+       break;
+    case Vp2:
+       tb.r4s_SetVp2((uint16_t) value);
+       break;
+    case Vcal:
+       tb.r4s_SetVcal((uint16_t) value);
+       break;
+    case Hold:
+       tb.r4s_SetMeasureHold((uint16_t) value);
+       break;
+    case IBiasRO:
+       tb.r4s_SetIbiasro((uint16_t) value);
+       break;
+    case IBiasIO:
+       tb.r4s_SetIbiasio((uint16_t) value);
+       break;
+    case VOffset:
+       tb.r4s_SetVoffset((uint16_t) value);
+       break;
+    }
 }
