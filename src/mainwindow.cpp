@@ -23,30 +23,31 @@ MainWindow::~MainWindow()
 
 void MainWindow::Init()
 {
-   ui->vana_n->Init(&CTestboard::SetVanaN, 1800, 0, 1800, "Vana N");
-   ui->vana_p->Init(&CTestboard::SetVanaP, 1250, 0, 1800, "Vana P");
-   ui->vd->Init(&CTestboard::SetVdig, 1800, 0, 2000, "Vdig");
-   ui->vddio->Init(&CTestboard::SetVddio, 1800, 0, 1800, "VDDIO");
-   ui->v18->Init(&CTestboard::SetV18, 1800, 0, 1800, "V18");
-   ui->biasd->Init(&CTestboard::SetVbiasD, 2400, 0, 2400, "Bias D");
-   ui->biasr->Init(&CTestboard::SetVbiasR, 1800, 0, 1800, "Bias R");
-   ui->vcascn->Init(&CTestboard::SetVcascN, 800, 0, 1800, "Vcasc N");
-   ui->vn0->Init(&CTestboard::SetVn0, 740, 0, 1800, "Vn0");
-   ui->vn1->Init(&CTestboard::SetVn1, 730, 0, 1800, "Vn1");
-   ui->vn2->Init(&CTestboard::SetVn2, 750, 0, 1800, "Vn2");
-   ui->vfb->Init(&CTestboard::SetVfb, 1100, 0, 1800, "Vfb");
-   ui->vprfb->Init(&CTestboard::SetVprefb, 700, 0, 1800, "Vprfb");
-   ui->vcascp->Init(&CTestboard::SetVcascP, 1100, 0, 1800, "Vcasc P");
-   ui->vp0->Init(&CTestboard::SetVp0, 820, 0, 1800, "Vp0");
-   ui->vp1->Init(&CTestboard::SetVp1, 725, 0, 1800, "Vp1");
-   ui->vp2->Init(&CTestboard::SetVp2, 685, 0, 1800, "Vp2");
+   ui->vana_n->Init(&CTestboard::SetVanaN, tb.GetVanaN(), 0, 1800, "Vana N");
+   ui->vana_p->Init(&CTestboard::SetVanaP, tb.GetVanaP(), 0, 1800, "Vana P");
+   ui->vd->Init(&CTestboard::SetVdig, tb.GetVdig(), 0, 2000, "Vdig");
+   ui->vddio->Init(&CTestboard::SetVddio, tb.GetVddio(), 0, 1800, "VDDIO");
+   ui->v18->Init(&CTestboard::SetV18, tb.GetV18(), 0, 1800, "V18");
+   ui->biasd->Init(&CTestboard::SetVbiasD, tb.GetVbiasD(), 0, 2400, "Bias D");
+   ui->biasr->Init(&CTestboard::SetVbiasR, tb.GetVbiasR(), 0, 1800, "Bias R");
+   ui->vcascn->Init(&CTestboard::SetVcascN, tb.GetVcascN(), 0, 1800, "Vcasc N");
+   ui->vn0->Init(&CTestboard::SetVn0, tb.GetVn0(), 0, 1800, "Vn0");
+   ui->vn1->Init(&CTestboard::SetVn1, tb.GetVn1(), 0, 1800, "Vn1");
+   ui->vn2->Init(&CTestboard::SetVn2, tb.GetVn2(), 0, 1800, "Vn2");
+   ui->vfb->Init(&CTestboard::SetVfb, tb.GetVfb(), 0, 1800, "Vfb");
+   ui->vprfb->Init(&CTestboard::SetVprefb, tb.GetVprefb(), 0, 1800, "Vprfb");
+   ui->vcascp->Init(&CTestboard::SetVcascP, tb.GetVcascP(), 0, 1800, "Vcasc P");
+   ui->vp0->Init(&CTestboard::SetVp0, tb.GetVp0(), 0, 1800, "Vp0");
+   ui->vp1->Init(&CTestboard::SetVp1, tb.GetVp1(), 0, 1800, "Vp1");
+   ui->vp2->Init(&CTestboard::SetVp2, tb.GetVp2(), 0, 1800, "Vp2");
 
-   ui->vcal->Init(&CTestboard::SetVcal, 1700, 0, 1800, "Vcal");
-   ui->vhold->Init(&CTestboard::SetThold, 2610, 1500, 3000, "t hold","a/u");
+   ui->vcal->Init(&CTestboard::SetVcal, tb.GetVcal(), 0, 1800, "Vcal");
+   int thold=tb.GetThold();
+   ui->vhold->Init(&CTestboard::SetThold, thold, min(thold,1500), 3000, "t hold","a/u");
 
-   ui->biasro->Init(&CTestboard::SetIbiasRO, 525, 0, 2000, "IBias ro");
-   ui->biasio->Init(&CTestboard::SetIbiasIO, 370, 0, 2000, "IBias I/O");
-   ui->offset->Init(&CTestboard::SetVoffset, 460, 0, 1800, "VOffset");
+   ui->biasro->Init(&CTestboard::SetIbiasRO, tb.GetIbiasRO(), 0, 2000, "IBias ro");
+   ui->biasio->Init(&CTestboard::SetIbiasIO, tb.GetIbiasIO(), 0, 2000, "IBias I/O");
+   ui->offset->Init(&CTestboard::SetVoffset, tb.GetVoffset(), 0, 1800, "VOffset");
 
    ui->average->Init(1, 1, 100, "Average","Frames");
 

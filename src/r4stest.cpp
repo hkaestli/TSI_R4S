@@ -104,7 +104,6 @@ int main(int argc, char* argv[])
 		// --- call command interpreter -----------------------
 		nEntry = 0;
 
-        app.Init();
         tb.Pon();
         tb.SetVD(2200);
         tb.SetID(2000);

@@ -219,27 +219,22 @@ CMD_PROC(yscan)
 CMD_PROC(dacscan)
 {
     std::vector<double> result;
-    int DAC,start, stop, step=1;
+    int DAC,start, stop, step;
     PAR_INT(DAC, 0, 21);
     PAR_INT(start, 0, 10000);
     PAR_INT(stop, 0, 10000);
+    PAR_INT(step, -10000, 10000 );
     tb.DACScan(DAC, start, stop, step, result);
 
-    for(int i=0; i<stop-start; i++)
+    for(int i=0; i<=(stop-start)/step; i++)
     {
         printf("%d : %f\n",start+i*step,result[i]);
     }
 }
 
-CMD_PROC(seqtest)
-{
-    tb.r4s_SetSeqTest();
-    DO_FLUSH
-}
-
 
 CMD_PROC(gui)
-{
+{   ((MyQApplication*)qApp)->Init();
     ((MyQApplication*)qApp)->Show();
 	printf("Connection to GUI closed.\n");
 }

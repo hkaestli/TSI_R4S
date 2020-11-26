@@ -118,7 +118,7 @@ const CSymbol CCmdLine::symtable[] =
     { "vp1",		Vp1 },
     { "vp2",		Vp2 },
     { "vcal",		Vcal },
-    { "hold",		Hold },
+    { "thold",		Hold },
     { "ibiasro",	IBiasRO },
     { "ibiasio",    IBiasIO },
     { "voffset",	VOffset },

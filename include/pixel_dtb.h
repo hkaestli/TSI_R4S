@@ -335,8 +335,9 @@ public:
 	// --- ROC4Sens adapter test functions ----------------------------------
 	RPC_EXPORT void r4s_SetMeasureSpan(uint32_t t);
 	RPC_EXPORT void r4s_SetMeasureCal(uint32_t t);
+private:
 	RPC_EXPORT void r4s_SetMeasureHold(uint32_t t);
-
+public:
 	RPC_EXPORT void r4s_AdcDelay(uint8_t t);
 	RPC_EXPORT void r4s_SetSequence(vector<uint32_t> &prog);
 
@@ -346,7 +347,6 @@ public:
     void r4s_SetSeqMeasureColumnReadout(); //measure & readout columnwise
 	void r4s_SetSeqCalScan();
     void r4s_SetSeqMeasureValue();
-    void r4s_SetSeqTest(int xy=0);
 
 	RPC_EXPORT void r4s_SetRegX(vector<uint32_t> &shr_x);
 	RPC_EXPORT void r4s_SetRegY(vector<uint32_t> &shr_y);

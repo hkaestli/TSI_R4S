@@ -32,7 +32,9 @@ daqena 3
 
 tspan 3000
 tcal   2508
-thold  2610
+thold  2516
+
+cal 2 16
 
 d1 5 trigger
 d2 0

@@ -618,7 +618,7 @@ CMD_PROC(thold)
 			tspan = thold + 2;
 			tb.r4s_SetMeasureSpan(tspan);
 		}
-		tb.r4s_SetMeasureHold(t);
+        tb.SetThold(t);
 	DO_FLUSH
 }
 

@@ -258,14 +258,6 @@ void CTestboard::r4s_SetSeqMeasureValue()
     r4s_SetSequence(prog);
 }
 
-void CTestboard::r4s_SetSeqTest(int xy)
-{
-    r4s_SetPixCal(2,2);
-    vector<uint32_t> prog(2);
-    prog[ 0] = 0x054321;
-    prog[ 1] = 0x00000000;
-    r4s_SetSequence(prog);
-}
 
 void CTestboard::DACScan(int DAC, int start, int stop, int step, std::vector<double> &result)
 {
@@ -295,7 +287,7 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::vector<dou
     r4s_SetSeqMeasureValue();
     Daq_Start();
 
-    for(int i=start; i<stop; i+=step)
+    for(int i=start; i<=stop; i+=step)
     {
         SetDAC(DAC, i);
         // take data
@@ -313,7 +305,7 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::vector<dou
 
     int n=0;
     double mean;
-    for(int i=start; i<stop; i+=step)
+    for(int i=start; i<=stop; i+=step)
     {
         mean=0;
         for (int j=0; j<10; j++) {
