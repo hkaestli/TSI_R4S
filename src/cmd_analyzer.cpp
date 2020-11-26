@@ -79,7 +79,7 @@ void R4sImg::Print(unsigned int count)
 
 void R4sImg::Save(FILE *f)
 {
-	int i = 0, x, y;
+    int x, y;
 
 	for (y = IMG_HEIGHT - 1; y >= 0; y--)
 	{
@@ -103,6 +103,7 @@ void R4sImg::Save(const string &filename)
 	fclose(f);
 }
 
+void SetDAC(int DAC, int value);
 
 void ReadImage(R4sImg &map)
 {
@@ -127,7 +128,6 @@ void ReadImage(R4sImg &map)
 	vector<uint16_t> data;
 	unsigned int ret = tb.Daq_Read(data);
 
-	unsigned int n = data.size();
 	printf("--- status = %u; n = %u\n", ret, (unsigned int)(data.size()));
 
 	tb.Daq_Close();
@@ -192,7 +192,7 @@ CMD_PROC(xscan)
 
     vector<uint32_t> calx(5, 0x00000000);
     for(int column=0; column<40; column++){
-       tb.r4s_SetPixCal(column, 0);
+       tb.SetPixCal(column, 0);
        printf("Column %d\n",column);
        tb.r4s_Start();
        tb.mDelay(50);
@@ -207,7 +207,7 @@ CMD_PROC(yscan)
     tb.r4s_SetSequence(prog);
 
     for(int row=0; row<20; row++){
-       tb.r4s_SetPixCal(0,row);
+       tb.SetPixCal(0,row);
        printf("Row %d\n",row);
        tb.r4s_Start();
        tb.mDelay(50);
@@ -218,35 +218,18 @@ CMD_PROC(yscan)
 
 CMD_PROC(dacscan)
 {
-    int x,y;
-    PAR_INT(x, 0, 40);
-    PAR_INT(y, 0, 20);
-    tb.r4s_SetPixCal(x,y);
-    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
-    tb.r4s_AdcDelay(7);
-    tb.r4s_Enable(3); // slow readout
-    tb.uDelay(400);
+    std::vector<double> result;
+    int DAC,start, stop, step=1;
+    PAR_INT(DAC, 0, 21);
+    PAR_INT(start, 0, 10000);
+    PAR_INT(stop, 0, 10000);
+    tb.DACScan(DAC, start, stop, step, result);
 
-    vector<uint32_t> prog(2);
-    prog[ 0] = 0x04321;
-    prog[ 1] = 0x0;
-    tb.r4s_SetSequence(prog);
-    tb.r4s_Start();
-    DO_FLUSH
-
-    prog[ 0] = 0x0b5;
-    prog[ 1] = 0x0;
-    tb.r4s_SetSequence(prog);
-    DO_FLUSH
-
-    for(uint16_t i=500; i<1800; i++){
-        tb.r4s_SetVcal(i);
-        tb.mDelay(10);
-        tb.r4s_Start();
-        DO_FLUSH
+    for(int i=0; i<stop-start; i++)
+    {
+        printf("%d : %f\n",start+i*step,result[i]);
     }
 }
-
 
 CMD_PROC(seqtest)
 {
@@ -292,7 +275,7 @@ CMD_PROC(takedata)
 		tb.Daq_Stop();
 
 		// read DTB data buffer
-		unsigned int ret = tb.Daq_Read(data);
+        tb.Daq_Read(data);
 
 		map.CreateRaw(data);
 
@@ -312,3 +295,5 @@ CMD_PROC(takedata)
 
 	DO_FLUSH
 }
+
+

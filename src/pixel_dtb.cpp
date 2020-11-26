@@ -262,12 +262,218 @@ void CTestboard::r4s_SetSeqTest(int xy)
 {
     r4s_SetPixCal(2,2);
     vector<uint32_t> prog(2);
- /*
-    if(xy==0) prog[ 0] = 0xfffff321;
-    else prog[ 0] = 0xfffff421;
-    prog[ 1] = 0xffffffff;
-    */
     prog[ 0] = 0x054321;
     prog[ 1] = 0x00000000;
     r4s_SetSequence(prog);
+}
+
+void CTestboard::DACScan(int DAC, int start, int stop, int step, std::vector<double> &result)
+{
+    int old_value=GetDAC(DAC);
+    int x,y;
+    GetPixCal(x,y);   // could be overwritten in the mean time
+    SetPixCal(x,y);
+    std::vector<uint16_t> data;
+    // programm pixel
+    SignalProbeADC(PROBEA_SDATA1, GAIN_1);
+    vector<uint32_t> prog(1);
+    prog[ 0] = 0x054321;
+    r4s_SetSequence(prog);
+    r4s_Start();
+    uDelay(3000);
+    Flush();
+
+    // DAC scan
+    uint8_t roMode = 3;
+    Daq_Open(50000);
+
+    // prepare ADC
+    r4s_AdcDelay(7);
+    r4s_Enable(roMode);
+    uDelay(400);
+
+    r4s_SetSeqMeasureValue();
+    Daq_Start();
+
+    for(int i=start; i<stop; i+=step)
+    {
+        SetDAC(DAC, i);
+        // take data
+        r4s_Start();
+        uDelay(3000);
+        Flush();
+    }
+
+    Daq_Stop();
+    // stop ADC
+    r4s_Enable(0);
+    Daq_Read(data);
+    Daq_Close();
+    Flush();
+
+    int n=0;
+    double mean;
+    for(int i=start; i<stop; i+=step)
+    {
+        mean=0;
+        for (int j=0; j<10; j++) {
+            int value = (int) data[10*n+j];
+            if ((value & 0x1000) != 0) // ADC overrange
+                   value = -5000;
+            else if ((value & 0x0800) != 0) // negative
+                    value -= 0x1000;
+            mean+=(double)value;
+        }
+        mean=mean/10.0;
+        result.push_back(mean);
+        n++;
+    }
+    SetDAC(DAC, old_value);
+}
+
+void CTestboard::SetDAC(int DAC, int value)
+{
+   switch(DAC){
+        case VanaN:
+           SetVanaN(value);
+           break;
+        case VanaP:
+           SetVanaP(value);
+           break;
+        case Vdig:
+           SetVdig(value);
+           break;
+        case VDDIO:
+           SetVddio(value);
+           break;
+        case V18:
+           SetV18(value);
+           break;
+        case BiasD:
+           SetVbiasD(value);
+           break;
+        case BiasR:
+           SetVbiasR(value);
+           break;
+        case VcascN:
+           SetVcascN(value);
+           break;
+        case Vn0:
+           SetVn0(value);
+           break;
+        case Vn1:
+           SetVn1(value);
+           break;
+        case Vn2:
+           SetVn2(value);
+           break;
+        case Vfb:
+           SetVfb(value);
+           break;
+        case Vprfb:
+           SetVprefb(value);
+           break;
+        case VcascP:
+           SetVcascP(value);
+           break;
+        case Vp0:
+           SetVp0(value);
+           break;
+        case Vp1:
+           SetVp1(value);
+           break;
+        case Vp2:
+           SetVp2(value);
+           break;
+        case Vcal:
+           SetVcal(value);
+           break;
+        case Hold:
+           SetThold(value);
+           break;
+        case IBiasRO:
+           SetIbiasRO(value);
+           break;
+        case IBiasIO:
+           SetIbiasIO(value);
+           break;
+        case VOffset:
+           SetVoffset(value);
+           break;
+        }
+}
+
+
+int CTestboard::GetDAC(int DAC)
+{
+    int value=0;
+    switch(DAC){
+        case VanaN:
+           value = GetVanaN();
+           break;
+        case VanaP:
+           value = GetVanaP();
+           break;
+        case Vdig:
+           value = GetVdig();
+           break;
+        case VDDIO:
+           value = GetVddio();
+           break;
+        case V18:
+           value = GetV18();
+           break;
+        case BiasD:
+           value = GetVbiasD();
+           break;
+        case BiasR:
+           value = GetVbiasR();
+           break;
+        case VcascN:
+           value = GetVcascN();
+           break;
+        case Vn0:
+           value = GetVn0();
+           break;
+        case Vn1:
+           value = GetVn1();
+           break;
+        case Vn2:
+           value = GetVn2();
+           break;
+        case Vfb:
+           value = GetVfb();
+           break;
+        case Vprfb:
+           value = GetVprefb();
+           break;
+        case VcascP:
+           value = GetVcascP();
+           break;
+        case Vp0:
+           value = GetVp0();
+           break;
+        case Vp1:
+           value = GetVp1();
+           break;
+        case Vp2:
+           value = GetVp2();
+           break;
+        case Vcal:
+           value = GetVcal();
+           break;
+        case Hold:
+           value = GetThold();
+           break;
+        case IBiasRO:
+           value = GetIbiasRO();
+           break;
+        case IBiasIO:
+           value = GetIbiasIO();
+           break;
+        case VOffset:
+           value = GetVoffset();
+           break;
+        }
+    return value;
 }

@@ -18,8 +18,7 @@ class CustomSlider : public QWidget
 public:
     explicit CustomSlider(QWidget *parent = 0);
     ~CustomSlider();
-    void Init(void (CTestboard::*member)(uint16_t), int value, int minimum, int maximum, QString name, QString unit="mV");
-    void Init(void (CTestboard::*member)(uint32_t), int value, int minimum, int maximum, QString name, QString unit="mV");
+    void Init(void (CTestboard::*member)(int), int value, int minimum, int maximum, QString name, QString unit="mV");
     void Init(int value, int minimum, int maximum, QString name, QString unit="mV");
 
 public slots:
@@ -30,8 +29,7 @@ public slots:
 private:
     Ui::CustomSlider *ui;
     int maximum, minimum;
-    void (CTestboard::*func)(uint16_t);
-    void (CTestboard::*func32)(uint32_t);
+    void (CTestboard::*func)(int);
 };
 
 #endif // CUSTOMSLIDER_H

@@ -578,9 +578,9 @@ CMD_PROC(dread)
 CMD_PROC(cal)
 {
 	int x, y;
-	PAR_INT(x, 0, 154)
-	PAR_INT(y, 0, 159)
-	tb.r4s_SetPixCal(x, y);
+    PAR_INT(x, 0, 39)
+    PAR_INT(y, 0, 19)
+    tb.SetPixCal(x, y);
 	DO_FLUSH
 }
 
@@ -666,7 +666,7 @@ CMD_PROC(ibiasio)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetIbiasio(mV);
+    tb.SetIbiasIO(mV);
 	DO_FLUSH
 }
 
@@ -674,7 +674,7 @@ CMD_PROC(voffset)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVoffset(mV);
+    tb.SetVoffset(mV);
 	DO_FLUSH
 }
 
@@ -682,7 +682,7 @@ CMD_PROC(vfb)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVfb(mV);
+    tb.SetVfb(mV);
 	DO_FLUSH
 }
 
@@ -690,7 +690,7 @@ CMD_PROC(vn2)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVn2(mV);
+    tb.SetVn2(mV);
 	DO_FLUSH
 }
 
@@ -698,7 +698,7 @@ CMD_PROC(vn1)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVn1(mV);
+    tb.SetVn1(mV);
 	DO_FLUSH
 }
 
@@ -706,7 +706,7 @@ CMD_PROC(vn0)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVn0(mV);
+    tb.SetVn0(mV);
 	DO_FLUSH
 }
 
@@ -714,7 +714,7 @@ CMD_PROC(vcascn)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVcasc_n(mV);
+    tb.SetVcascN(mV);
 	DO_FLUSH
 }
 
@@ -722,7 +722,7 @@ CMD_PROC(vbiasd)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVbias_d(mV);
+    tb.SetVbiasD(mV);
 	DO_FLUSH
 }
 
@@ -730,7 +730,7 @@ CMD_PROC(ibiasro)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetIbiasro(mV);
+    tb.SetIbiasRO(mV);
 	DO_FLUSH
 }
 
@@ -738,7 +738,7 @@ CMD_PROC(vcal)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVcal(mV);
+    tb.SetVcal(mV);
 	DO_FLUSH
 }
 
@@ -746,7 +746,7 @@ CMD_PROC(vbiasr)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVbias_r(mV);
+    tb.SetVbiasR(mV);
 	DO_FLUSH
 }
 
@@ -754,7 +754,7 @@ CMD_PROC(vprefb)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVprefb(mV);
+    tb.SetVprefb(mV);
 	DO_FLUSH
 }
 
@@ -762,7 +762,7 @@ CMD_PROC(vcascp)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVcasc_p(mV);
+    tb.SetVcascP(mV);
 	DO_FLUSH
 }
 
@@ -770,7 +770,7 @@ CMD_PROC(vp0)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVp0(mV);
+    tb.SetVp0(mV);
 	DO_FLUSH
 }
 
@@ -778,7 +778,7 @@ CMD_PROC(vp1)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVp1(mV);
+    tb.SetVp1(mV);
 	DO_FLUSH
 }
 
@@ -786,7 +786,7 @@ CMD_PROC(vp2)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVp2(mV);
+    tb.SetVp2(mV);
 	DO_FLUSH
 }
 
@@ -794,7 +794,7 @@ CMD_PROC(v18)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetV18(mV);
+    tb.SetV18(mV);
 	DO_FLUSH
 }
 
@@ -802,7 +802,7 @@ CMD_PROC(vanan)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVana_n(mV);
+    tb.SetVanaN(mV);
 	DO_FLUSH
 }
 
@@ -810,7 +810,7 @@ CMD_PROC(vddio)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVddio(mV);
+    tb.SetVddio(mV);
 	DO_FLUSH
 }
 
@@ -818,7 +818,7 @@ CMD_PROC(vanap)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVana_p(mV);
+    tb.SetVanaP(mV);
 	DO_FLUSH
 }
 
@@ -826,7 +826,7 @@ CMD_PROC(vdig)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-	tb.r4s_SetVdig(mV);
+    tb.SetVdig(mV);
 	DO_FLUSH
 }
 

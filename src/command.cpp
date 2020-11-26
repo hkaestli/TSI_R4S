@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 #include <string>
-
+#include "pixel_dtb.h"
 #ifdef _WIN32
 #include <conio.h>
 #else
@@ -100,35 +100,28 @@ int CCmdLine::GetHex(char ch)
 
 const CSymbol CCmdLine::symtable[] =
 {
-	{ "vdig",		0x01 },
-	{ "vana",		0x02 },
-	{ "vsh",		0x03 },
-	{ "vcomp",		0x04 },
-	{ "leak",		0x05 },
-	{ "rgpr",		0x06 },
-	{ "wllpr",		0x07 },
-	{ "rgsh",		0x08 },
-	{ "wllsh",		0x09 },
-	{ "hlddel",		0x0A },
-	{ "trim",		0x0B },
-	{ "thr",		0x0C },
-	{ "bias_bus",	0x0D },
-	{ "bias_sf",	0x0E },
-	{ "offset_op",	0x0F },
-	{ "bias_op",	0x10 },
-	{ "offset_ro",	0x11 },
-	{ "ion",		0x12 },
-	{ "bias_ph",	0x13 },
-	{ "bias_dac",	0x14 },
-	{ "bias_roc",	0x15 },
-	{ "color",		0x16 },
-	{ "npix",		0x17 },
-	{ "sumcol",		0x18 },
-	{ "cal",		0x19 },
-	{ "caldel",		0x1A },
-	{ "rangetemp",	0x1B },
-	{ "wbc",		0xFE },
-	{ "ctrl",		0xFD },
+    { "vanan",		VanaN },
+    { "vanap",		VanaP },
+    { "vdig",		Vdig },
+    { "vddio",		VDDIO },
+    { "v18",		V18 },
+    { "biasd",		BiasD },
+    { "biasr",		BiasR },
+    { "vcascn",		VcascN },
+    { "vn0",		Vn0 },
+    { "vn1",		Vn1 },
+    { "vn2",		Vn2 },
+    { "vfb",		Vfb },
+    { "vprefb",	    Vprfb },
+    { "vcascp",		VcascP },
+    { "vp0",		Vp0 },
+    { "vp1",		Vp1 },
+    { "vp2",		Vp2 },
+    { "vcal",		Vcal },
+    { "hold",		Hold },
+    { "ibiasro",	IBiasRO },
+    { "ibiasio",    IBiasIO },
+    { "voffset",	VOffset },
 	{ "",			0    }
 };
 
@@ -207,8 +200,8 @@ bool CCmdLine::getInt(int &value, int min, int max)
 	int v;
 
 	while (isWhitespace(par[0])) par++;
-
 	if (par[0] == '#') { par++; if (!getSymbol(v)) return false;	}
+    else if (par[0] >= 'a' && par[0]<='z') { if (!getSymbol(v)) return false;	}
 	else if (!getNumber(v)) return false;
 
 	if (v < min || max < v) return false;

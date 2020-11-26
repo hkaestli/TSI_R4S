@@ -23,6 +23,42 @@
 
 #include "usb.h"
 
+enum DACs{VanaN, VanaP, Vdig, VDDIO, V18, BiasD, BiasR, VcascN, Vn0, Vn1, Vn2,
+          Vfb, Vprfb, VcascP, Vp0, Vp1, Vp2, Vcal, Hold, IBiasRO, IBiasIO, VOffset};
+
+class CDUT
+{
+public:
+    int Ibiasio;
+    int Voffset;
+    int Vbiasro;
+
+    int Vfb;
+    int Vn0;
+    int Vn1;
+    int Vn2;
+    int VcascN;
+
+    int VbiasD;
+    int VbiasR;
+
+    int Vprefb;
+    int Vp0;
+    int Vp1;
+    int Vp2;
+    int VcascP;
+
+    int VanaN;
+    int VanaP;
+    int Vddio;
+    int V18;
+    int Vdig;
+    int Vcal;
+    int Thold;
+
+    int x;
+    int y;
+};
 
 class CTestboard
 {
@@ -39,7 +75,64 @@ public:
 
 	CTestboard() { RPC_INIT rpc_io = &usb; }
 	~CTestboard() { RPC_EXIT }
+    void DACScan(int DAC, int start, int stop, int step, std::vector<double> &result);
+    void SetDAC(int DAC, int value);
+    int GetDAC(int DAC);
 
+    int GetIbiasIO(){return dut.Ibiasio;};
+    int GetVoffset(){return dut.Voffset;};
+    int GetIbiasRO(){return dut.Vbiasro;};
+    int GetVfb(){return dut.Vfb;};
+    int GetVn0(){return dut.Vn0;};
+    int GetVn1(){return dut.Vn1;};
+    int GetVn2(){return dut.Vn2;};
+    int GetVcascN(){return dut.VcascN;};
+
+    int GetVprefb(){return dut.Vprefb;};
+    int GetVp0(){return dut.Vp0;};
+    int GetVp1(){return dut.Vp1;};
+    int GetVp2(){return dut.Vp2;};
+    int GetVcascP(){return dut.VcascP;};
+
+    int GetVbiasD(){return dut.VbiasD;};
+    int GetVbiasR(){return dut.VbiasR;};
+
+    int GetVanaN(){return dut.VanaN;};
+    int GetVanaP(){return dut.VanaP;};
+    int GetVddio(){return dut.Vddio;};
+    int GetV18(){return dut.V18;};
+    int GetVdig(){return dut.Vdig;};
+
+    int GetVcal(){return dut.Vcal;};
+    int GetThold(){return dut.Thold;};
+    void GetPixCal(int &x, int &y){x=dut.x; y=dut.y;};
+
+    void SetIbiasIO(int value){dut.Ibiasio=value; r4s_SetIbiasio((uint16_t) value);};
+    void SetVoffset(int value){dut.Voffset=value; r4s_SetVoffset((uint16_t) value);};
+    void SetIbiasRO(int value){dut.Vbiasro=value; r4s_SetIbiasro((uint16_t) value);};
+    void SetVfb(int value){dut.Vfb=value; r4s_SetVfb((uint16_t) value);};
+    void SetVn0(int value){dut.Vn0=value; r4s_SetVn0((uint16_t) value);};
+    void SetVn1(int value){dut.Vn1=value; r4s_SetVn1((uint16_t) value);};
+    void SetVn2(int value){dut.Vn2=value; r4s_SetVn2((uint16_t) value);};
+    void SetVcascN(int value){dut.VcascN=value; r4s_SetVcasc_n((uint16_t) value);};
+
+    void SetVprefb(int value){dut.Vprefb=value; r4s_SetVprefb((uint16_t) value);};
+    void SetVp0(int value){dut.Vp0=value; r4s_SetVp0((uint16_t) value);};
+    void SetVp1(int value){dut.Vp1=value; r4s_SetVp1((uint16_t) value);};
+    void SetVp2(int value){dut.Vp2=value; r4s_SetVp2((uint16_t) value);};
+    void SetVcascP(int value){dut.VcascP=value; r4s_SetVcasc_p((uint16_t) value);};
+    void SetVbiasD(int value){dut.VbiasD=value; r4s_SetVbias_d((uint16_t) value);};
+    void SetVbiasR(int value){dut.VbiasR=value; r4s_SetVbias_r((uint16_t) value);};
+
+    void SetVanaN(int value){dut.VanaN=value; r4s_SetVana_n((uint16_t) value);};
+    void SetVanaP(int value){dut.VanaP=value; r4s_SetVana_p((uint16_t) value);};
+    void SetVddio(int value){dut.Vddio=value; r4s_SetVddio((uint16_t) value);};
+    void SetV18(int value){dut.V18=value; r4s_SetV18((uint16_t) value);};
+    void SetVdig(int value){dut.Vdig=value; r4s_SetVdig((uint16_t) value);};
+
+    void SetVcal(int value){dut.Vcal=value; r4s_SetVcal((uint16_t) value);};
+    void SetThold(int value){dut.Thold=value; r4s_SetMeasureHold((uint32_t) value);};
+    void SetPixCal(int x, int y){dut.x=x; dut.y=y; r4s_SetPixCal((uint8_t)x, (uint8_t) y);};
 
 	// === RPC ==============================================================
 
@@ -255,40 +348,43 @@ public:
     void r4s_SetSeqMeasureValue();
     void r4s_SetSeqTest(int xy=0);
 
-    void r4s_SetPixCal(uint8_t x, uint8_t y);
-
 	RPC_EXPORT void r4s_SetRegX(vector<uint32_t> &shr_x);
 	RPC_EXPORT void r4s_SetRegY(vector<uint32_t> &shr_y);
 
-	RPC_EXPORT void r4s_Enable(uint8_t t);
+    RPC_EXPORT void r4s_Enable(uint8_t t);
 	RPC_EXPORT void r4s_Start();
 	RPC_EXPORT void r4s_Stop();
 	RPC_EXPORT bool r4s_Running();
 
-	RPC_EXPORT void r4s_SetIbiasio(uint16_t mV);
-	RPC_EXPORT void r4s_SetVoffset(uint16_t mV);
-	RPC_EXPORT void r4s_SetVfb(uint16_t mV);
-	RPC_EXPORT void r4s_SetVn2(uint16_t mV);
-	RPC_EXPORT void r4s_SetVn1(uint16_t mV);
-	RPC_EXPORT void r4s_SetVn0(uint16_t mV);
-	RPC_EXPORT void r4s_SetVcasc_n(uint16_t mV);
-	RPC_EXPORT void r4s_SetVbias_d(uint16_t mV);
+private:
+    void r4s_SetPixCal(uint8_t x, uint8_t y);
+    RPC_EXPORT void r4s_SetIbiasio(uint16_t mV);
+    RPC_EXPORT void r4s_SetVoffset(uint16_t mV);
+    RPC_EXPORT void r4s_SetVfb(uint16_t mV);
+    RPC_EXPORT void r4s_SetVn2(uint16_t mV);
+    RPC_EXPORT void r4s_SetVn1(uint16_t mV);
+    RPC_EXPORT void r4s_SetVn0(uint16_t mV);
+    RPC_EXPORT void r4s_SetVcasc_n(uint16_t mV);
+    RPC_EXPORT void r4s_SetVbias_d(uint16_t mV);
 
-	RPC_EXPORT void r4s_SetIbiasro(uint16_t mV);
-	RPC_EXPORT void r4s_SetVcal(uint16_t mV);
-	RPC_EXPORT void r4s_SetVbias_r(uint16_t mV);
-	RPC_EXPORT void r4s_SetVprefb(uint16_t mV);
-	RPC_EXPORT void r4s_SetVcasc_p(uint16_t mV);
-	RPC_EXPORT void r4s_SetVp0(uint16_t mV);
-	RPC_EXPORT void r4s_SetVp1(uint16_t mV);
-	RPC_EXPORT void r4s_SetVp2(uint16_t mV);
+    RPC_EXPORT void r4s_SetIbiasro(uint16_t mV);
+    RPC_EXPORT void r4s_SetVcal(uint16_t mV);
+    RPC_EXPORT void r4s_SetVbias_r(uint16_t mV);
+    RPC_EXPORT void r4s_SetVprefb(uint16_t mV);
+    RPC_EXPORT void r4s_SetVcasc_p(uint16_t mV);
+    RPC_EXPORT void r4s_SetVp0(uint16_t mV);
+    RPC_EXPORT void r4s_SetVp1(uint16_t mV);
+    RPC_EXPORT void r4s_SetVp2(uint16_t mV);
 
-	RPC_EXPORT void r4s_SetV18(uint16_t mV);
-	RPC_EXPORT void r4s_SetVana_n(uint16_t mV);
-	RPC_EXPORT void r4s_SetVddio(uint16_t mV);
-	RPC_EXPORT void r4s_SetVana_p(uint16_t mV);
-	RPC_EXPORT void r4s_SetVdig(uint16_t mV);
-
+    RPC_EXPORT void r4s_SetV18(uint16_t mV);
+    RPC_EXPORT void r4s_SetVana_n(uint16_t mV);
+    RPC_EXPORT void r4s_SetVddio(uint16_t mV);
+    RPC_EXPORT void r4s_SetVana_p(uint16_t mV);
+    RPC_EXPORT void r4s_SetVdig(uint16_t mV);
+public:
 	RPC_EXPORT void test_i2c(uint16_t addr, uint16_t cmd, uint16_t hdata, uint16_t ldata);
+
+private:
+    CDUT dut;
 
 };

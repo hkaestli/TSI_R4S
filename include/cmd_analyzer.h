@@ -23,5 +23,5 @@ CMD_REG(xscan, "", "Scan through columns")
 CMD_REG(yscan, "", "Scan through rows")
 CMD_REG(dacscan, "", "Do a DAC scan")
 
-CMD_REG(gui, "", "Start graphical user interface");
-CMD_REG(takedata, "<#events>", "Take data");
+CMD_REG(gui, "", "Start graphical user interface")
+CMD_REG(takedata, "<#events>", "Take data")

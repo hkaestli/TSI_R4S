@@ -67,7 +67,6 @@ int main(int argc, char* argv[])
 
 	// --- open test board --------------------------------
 	Log.section("DTB");
-
 	try
 	{
 		if (!tb.FindDTB(usbId)) {}

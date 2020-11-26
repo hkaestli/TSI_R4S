@@ -23,31 +23,30 @@ MainWindow::~MainWindow()
 
 void MainWindow::Init()
 {
+   ui->vana_n->Init(&CTestboard::SetVanaN, 1800, 0, 1800, "Vana N");
+   ui->vana_p->Init(&CTestboard::SetVanaP, 1250, 0, 1800, "Vana P");
+   ui->vd->Init(&CTestboard::SetVdig, 1800, 0, 2000, "Vdig");
+   ui->vddio->Init(&CTestboard::SetVddio, 1800, 0, 1800, "VDDIO");
+   ui->v18->Init(&CTestboard::SetV18, 1800, 0, 1800, "V18");
+   ui->biasd->Init(&CTestboard::SetVbiasD, 2400, 0, 2400, "Bias D");
+   ui->biasr->Init(&CTestboard::SetVbiasR, 1800, 0, 1800, "Bias R");
+   ui->vcascn->Init(&CTestboard::SetVcascN, 800, 0, 1800, "Vcasc N");
+   ui->vn0->Init(&CTestboard::SetVn0, 740, 0, 1800, "Vn0");
+   ui->vn1->Init(&CTestboard::SetVn1, 730, 0, 1800, "Vn1");
+   ui->vn2->Init(&CTestboard::SetVn2, 750, 0, 1800, "Vn2");
+   ui->vfb->Init(&CTestboard::SetVfb, 1100, 0, 1800, "Vfb");
+   ui->vprfb->Init(&CTestboard::SetVprefb, 700, 0, 1800, "Vprfb");
+   ui->vcascp->Init(&CTestboard::SetVcascP, 1100, 0, 1800, "Vcasc P");
+   ui->vp0->Init(&CTestboard::SetVp0, 820, 0, 1800, "Vp0");
+   ui->vp1->Init(&CTestboard::SetVp1, 725, 0, 1800, "Vp1");
+   ui->vp2->Init(&CTestboard::SetVp2, 685, 0, 1800, "Vp2");
 
-   ui->vana_n->Init(&CTestboard::r4s_SetVana_n, 1800, 0, 1800, "Vana N");
-   ui->vana_p->Init(&CTestboard::r4s_SetVana_p, 1250, 0, 1800, "Vana P");
-   ui->vd->Init(&CTestboard::r4s_SetVdig, 1800, 0, 2000, "Vdig");
-   ui->vddio->Init(&CTestboard::r4s_SetVddio, 1800, 0, 1800, "VDDIO");
-   ui->v18->Init(&CTestboard::r4s_SetV18, 1800, 0, 1800, "V18");
-   ui->biasd->Init(&CTestboard::r4s_SetVbias_d, 2400, 0, 2400, "Bias D");
-   ui->biasr->Init(&CTestboard::r4s_SetVbias_r, 1800, 0, 1800, "Bias R");
-   ui->vcascn->Init(&CTestboard::r4s_SetVcasc_n, 800, 0, 1800, "Vcasc N");
-   ui->vn0->Init(&CTestboard::r4s_SetVn0, 740, 0, 1800, "Vn0");
-   ui->vn1->Init(&CTestboard::r4s_SetVn1, 730, 0, 1800, "Vn1");
-   ui->vn2->Init(&CTestboard::r4s_SetVn2, 750, 0, 1800, "Vn2");
-   ui->vfb->Init(&CTestboard::r4s_SetVfb, 1100, 0, 1800, "Vfb");
-   ui->vprfb->Init(&CTestboard::r4s_SetVprefb, 700, 0, 1800, "Vprfb");
-   ui->vcascp->Init(&CTestboard::r4s_SetVcasc_p, 1100, 0, 1800, "Vcasc P");
-   ui->vp0->Init(&CTestboard::r4s_SetVp0, 820, 0, 1800, "Vp0");
-   ui->vp1->Init(&CTestboard::r4s_SetVp1, 725, 0, 1800, "Vp1");
-   ui->vp2->Init(&CTestboard::r4s_SetVp2, 685, 0, 1800, "Vp2");
+   ui->vcal->Init(&CTestboard::SetVcal, 1700, 0, 1800, "Vcal");
+   ui->vhold->Init(&CTestboard::SetThold, 2610, 1500, 3000, "t hold","a/u");
 
-   ui->vcal->Init(&CTestboard::r4s_SetVcal, 1700, 0, 1800, "Vcal");
-   ui->vhold->Init(&CTestboard::r4s_SetMeasureHold, 2610, 1500, 3000, "t hold","a/u");
-
-   ui->biasro->Init(&CTestboard::r4s_SetIbiasro, 525, 0, 2000, "IBias ro");
-   ui->biasio->Init(&CTestboard::r4s_SetIbiasio, 370, 0, 2000, "IBias I/O");
-   ui->offset->Init(&CTestboard::r4s_SetVoffset, 460, 0, 1800, "VOffset");
+   ui->biasro->Init(&CTestboard::SetIbiasRO, 525, 0, 2000, "IBias ro");
+   ui->biasio->Init(&CTestboard::SetIbiasIO, 370, 0, 2000, "IBias I/O");
+   ui->offset->Init(&CTestboard::SetVoffset, 460, 0, 1800, "VOffset");
 
    ui->average->Init(1, 1, 100, "Average","Frames");
 
@@ -139,7 +138,7 @@ void MainWindow::on_image_clicked()
         ui->loop->setChecked(false);
         timer->stop();
     }
-    DACScan(0,0,1000,100);  printf("Data size= %d\n",(int) data.size());
+    DACScan(Hold,2500,2550,1);
  //   onTimeout();
 }
 
@@ -267,59 +266,14 @@ void MainWindow::on_rowwise_clicked()
 
 void MainWindow::DACScan(int DAC, int start, int stop, int step)
 {
-    // programm pixel
-    tb.r4s_SetPixCal(2,2);
-    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
-    vector<uint32_t> prog(1);
-    prog[ 0] = 0x054321;
-    tb.r4s_SetSequence(prog);
-    tb.r4s_Start();
-    tb.uDelay(3000);
-    tb.Flush();
+    std::vector<double> result;
+    tb.DACScan(DAC, start, stop, step, result);
 
-    // DAC scan
-    uint8_t roMode = 3;
-    tb.Daq_Open(50000);
-
-    // prepare ADC
-    tb.r4s_AdcDelay(7);
-    tb.r4s_Enable(roMode);
-    tb.uDelay(400);
-
-    tb.r4s_SetSeqMeasureValue();
-    tb.Daq_Start();
-
-    for(int i=start; i<stop; i+=step)
+    for(int i=0; i<stop-start; i++)
     {
-        // take data
-        tb.r4s_Start();
-        tb.uDelay(3000);
-        tb.Flush();
-    }
-
-    tb.Daq_Stop();
-    // stop ADC
-    tb.r4s_Enable(0);
-    tb.Daq_Read(data);
-    tb.Daq_Close();
-    tb.Flush();
-
-    int n=0;
-    for(int i=start; i<stop; i+=step)
-    {
-        double mean=0;
-        for (int j=0; j<10; j++) {
-            int value = (int) data[10*n+j];
-            if ((value & 0x1000) != 0) // ADC overrange
-                   value = -5000;
-            else if ((value & 0x0800) != 0) // negative
-                    value -= 0x1000;
-            mean+=(double)value;
-        }
-        mean=mean/10.0;
-        printf("%d : %f\n",i,mean);
-        n++;
+        printf("%d : %f\n",start+i*step,result[i]);
     }
     if(columnwise) tb.r4s_SetSeqMeasureColumnReadout();
     else tb.r4s_SetSeqMeasureReadout();
 }
+

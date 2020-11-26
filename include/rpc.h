@@ -66,8 +66,6 @@ extern const char rpc_timestamp[];
 
 #define RPC_EXIT delete[] rpc_cmdId;
 
-#define RPC_EXPORT
-
 extern CRpcIoNull RpcIoNull;
 
 
