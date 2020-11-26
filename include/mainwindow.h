@@ -11,6 +11,8 @@ namespace Ui {
 class MainWindow;
 }
 
+union DAC{};
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
