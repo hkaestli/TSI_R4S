@@ -218,7 +218,7 @@ CMD_PROC(yscan)
 
 CMD_PROC(dacscan)
 {
-    std::vector<double> result;
+    std::map<int,double> result;
     int DAC,start, stop, step;
     PAR_INT(DAC, 0, 21);
     PAR_INT(start, 0, 10000);
@@ -226,15 +226,42 @@ CMD_PROC(dacscan)
     PAR_INT(step, -10000, 10000 );
     tb.DACScan(DAC, start, stop, step, result);
 
-    for(int i=0; i<=(stop-start)/step; i++)
+    for(int i=start; i<=stop; i+=step)
     {
-        printf("%d : %f\n",start+i*step,result[i]);
+        printf("%d : %f\n",i,result[i]);
     }
 }
 
+CMD_PROC(dacdacscan)
+{
+    std::map<int,double> result;
+    int DAC1,start1, stop1, step1;
+    int DAC2,start2, stop2, step2;
+    PAR_INT(DAC1, 0, 21);
+    PAR_INT(start1, 0, 10000);
+    PAR_INT(stop1, 0, 10000);
+    PAR_INT(step1, -10000, 10000 );
+    PAR_INT(DAC2, 0, 21);
+    PAR_INT(start2, 0, 10000);
+    PAR_INT(stop2, 0, 10000);
+    PAR_INT(step2, -10000, 10000 );
+    tb.DACDACScan(DAC1, start1, stop1, step1,
+               DAC2, start2, stop2, step2, result);
+
+    int stop=max(stop1, stop2);
+    for(int i=start1; i<=stop1; i+=step1)
+    {
+        for(int j=start2; j<=stop2; j+=step2)
+        {
+            printf("%d  %d : %f\n",i, j, result[j+i*stop]);
+        }
+        printf("\n");
+    }
+}
 
 CMD_PROC(gui)
-{   ((MyQApplication*)qApp)->Init();
+{
+    ((MyQApplication*)qApp)->Init();
     ((MyQApplication*)qApp)->Show();
 	printf("Connection to GUI closed.\n");
 }

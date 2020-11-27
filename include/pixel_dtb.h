@@ -16,6 +16,7 @@
 
 #include "rpc.h"
 #include "config.h"
+#include <map>
 
 #ifdef _WIN32
 #include "pipe.h"
@@ -75,7 +76,9 @@ public:
 
 	CTestboard() { RPC_INIT rpc_io = &usb; }
 	~CTestboard() { RPC_EXIT }
-    void DACScan(int DAC, int start, int stop, int step, std::vector<double> &result);
+    void DACScan(int DAC, int start, int stop, int step, std::map<int,double> &result);
+    void DACDACScan(int DAC1, int start1, int stop1, int step1,
+                    int DAC2, int start2, int stop2, int step2, std::map<int,double> &result);
     void SetDAC(int DAC, int value);
     int GetDAC(int DAC);
 

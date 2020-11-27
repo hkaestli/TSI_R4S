@@ -267,12 +267,12 @@ void MainWindow::on_rowwise_clicked()
 
 void MainWindow::DACScan(int DAC, int start, int stop, int step)
 {
-    std::vector<double> result;
+    std::map<int,double> result;
     tb.DACScan(DAC, start, stop, step, result);
 
-    for(int i=0; i<stop-start; i++)
+    for(int i=start; i<=stop; i+=step)
     {
-        printf("%d : %f\n",start+i*step,result[i]);
+        printf("%d : %f\n",i,result[i]);
     }
     if(columnwise) tb.r4s_SetSeqMeasureColumnReadout();
     else tb.r4s_SetSeqMeasureReadout();
