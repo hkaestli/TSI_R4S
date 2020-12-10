@@ -228,7 +228,7 @@ CMD_PROC(dacscan)
 
     for(int i=start; i<=stop; i+=step)
     {
-        printf("%d : %f\n",i,result[i]);
+        printf("%f\n",result[i]);
     }
 }
 

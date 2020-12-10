@@ -35,7 +35,7 @@ tspan 3000
 tcal   2508
 thold  2517
 
-cal 2 16
+cal 2 6
 
 d1 5 trigger
 d2 0

@@ -4,10 +4,10 @@ va 2400 mV
 ia 300  mA
 
 ibiasio  400 mV @ 4.7kOhm 130uA
-voffset  520
+voffset  539
 ibiasro  525 mV @ 22kOhm 20uA
 
-vfb     1000
+vfb     1250
 vn2      800
 vn1      730
 vn0      740
@@ -35,7 +35,7 @@ tspan 3000
 tcal   2508
 thold  2517
 
-cal 2 16
+cal 2 1
 
 d1 5 trigger
 d2 0
