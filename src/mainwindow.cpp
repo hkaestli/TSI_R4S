@@ -1,23 +1,23 @@
 #include "../include/mainwindow.h"
 #include "ui_mainwindow.h"
 
-
-
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), dark(false), running(false),
+    QMainWindow(parent), dark(false), loop_running(false), take_data_running(false),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     setupColorMap(ui->customPlot);
     darkfield.resize(COLUMNS*ROWS,0.0);
     data.resize(COLUMNS*ROWS,0);
-    timer = new QTimer(this);
+    loopTimer = new QTimer(this);
+    takeDataTimer = new QTimer(this);
     columnwise=true;
+    triggerSource = 0;
 }
 
 MainWindow::~MainWindow()
 {
-    delete timer;
+    delete loopTimer;
     delete ui;
 }
 
@@ -51,10 +51,12 @@ void MainWindow::Init()
 
    ui->average->Init(1, 1, 100, "Average","Frames");
 
-   connect(timer, &QTimer::timeout, this, &MainWindow::onTimeout);
+   connect(loopTimer, &QTimer::timeout, this, &MainWindow::onLoopTimeout);
+   connect(takeDataTimer, &QTimer::timeout, this, &MainWindow::onTakeDataTimeout);
 
-   ui->columnwise->setChecked(true);
    on_columnwise_clicked();
+   on_internalCal_clicked();
+
 }
 
 void MainWindow::setupColorMap(QCustomPlot *cP)
@@ -131,21 +133,75 @@ void MainWindow::on_unzoom_y_clicked()
     customPlot->replot();
 }
 
-void MainWindow::on_image_clicked()
+
+void MainWindow::on_delayScan_clicked()
 {
-    if(running){
-        running=false;
-        ui->loop->setText("Loop");
-        ui->loop->setChecked(false);
-        timer->stop();
+    if(loop_running){
+        printf("Stop loop before clicking delay scan\n");
+    }else if (take_data_running) {
+        printf("Stop data taking before clicking delay scan\n");
+    }else{
+        DACScan(Hold,2500,2550,1);
     }
-    DACScan(Hold,2500,2550,1);
- //   onTimeout();
+
 }
 
-void MainWindow::onTimeout()
+void MainWindow::DACScan(int DAC, int start, int stop, int step)
+{
+    std::map<int,double> result;
+    tb.DACScan(DAC, start, stop, step, result);
+
+    for(int i=start; i<=stop; i+=step)
+    {
+        printf("%d : %f\n",i,result[i]);
+    }
+    if(columnwise) tb.r4s_SetSeqMeasureColumnReadout();
+    else tb.r4s_SetSeqMeasureReadout();
+}
+
+//======================================================
+// the button marked "single"
+// is like "loop" with just one loop made
+void MainWindow::on_image_clicked()
+{
+    if(loop_running){
+        printf("Stop loop before clicking single\n");
+    }else if (take_data_running) {
+        printf("Stop data taking before clicking single\n");
+    }else{
+        onLoopTimeout();
+    }
+}
+
+//======================================================
+// loop related
+
+
+void MainWindow::on_loop_clicked()
+{
+
+    if (take_data_running){
+        // in case "take data" is running just ignore the click
+        printf("Stop take data before starting a loop\n");
+    }else{
+        if(loop_running){
+            loop_running=false;
+            ui->loop->setText("Loop");
+            ui->loop->setChecked(false);
+            loopTimer->stop();
+        }else {
+            loop_running=true;
+            ui->loop->setText("Stop");
+            ui->loop->setChecked(true);
+            loopTimer->start(200);
+        }
+    }
+}
+
+void MainWindow::onLoopTimeout()
 {
     GetFrame();
+
 
     int x, y;
     if(columnwise){
@@ -176,8 +232,9 @@ void MainWindow::onTimeout()
 
 void MainWindow::GetFrame()
 {
+    // braucht es nur einmal pro run
     uint8_t roMode = 3;
-    tb.Daq_Open(50000);
+    tb.Daq_Open(50000); // Anzahl pixel: 42 x 22 = 924 waeren genug
 
     // prepare ADC
     tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
@@ -185,19 +242,179 @@ void MainWindow::GetFrame()
     tb.r4s_Enable(roMode);
     tb.uDelay(400);
 
+    // bei jedem event
     // take data
-    tb.Daq_Start();
-    tb.r4s_Start();
+    tb.Daq_Start(); // macht adcs scharf
+    tb.r4s_Start(); // startet chip sequence
     tb.uDelay(3000);
+
     tb.Daq_Stop();
 
     // stop ADC
     tb.r4s_Enable(0);
 
-    tb.Daq_Read(data);
+    tb.Daq_Read(data);// liest daten von dtb -> PC
+
+    // nur 1x pro run
     tb.Daq_Close();
     tb.Flush();
 }
+
+//======================================================
+// take data related
+
+void MainWindow::on_takeData_clicked(){
+
+    if (loop_running){
+        printf("Stop loop before pressing take data\n");
+    }else{
+
+        if(take_data_running){
+            // end takeData
+            printf("Stop data taking clicked. Events taken: %d \n", eventCounter);
+            endTakeData();
+        }else {
+            take_data_running=true;
+            ui->takeData->setText("Stop");
+            ui->takeData->setChecked(true);
+
+            eventCounter = 0;
+            int n = ui->numberOfEvents->value();
+            printf("Take Data clicked. Start data taking of %d events.\n", n);
+
+            // open file
+            fileOut = new TFile("output.root","recreate");
+            eventTree = new TTree("eventTree","eventTree");
+            eventTree->Branch("eventBranch",ana, "ana[42][22]/I");
+            // using the definitions COLUMS and ROWS compiles but is considered as "variable" definition at run time and crashes
+
+            // prepare dtb for data taking
+            uint8_t roMode = 3;
+            tb.Daq_Open(50000); // Anzahl pixel: 42 x 22 = 924 waeren genug
+
+            // prepare ADC
+            tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
+            tb.r4s_AdcDelay(7);
+            tb.r4s_Enable(roMode);
+            //tb.uDelay(400);
+            // start timer to trigger a readout sequence once every 200ms
+            takeDataTimer->start(200);
+        }
+    }
+}
+
+
+void MainWindow::onTakeDataTimeout()
+{
+
+    // check if r4s sequence is still running
+    if (tb.r4s_Running()){
+        printf("timeout triggered while seq is still running\n");
+        tb.r4s_Stop();
+    }
+    // read data from last event
+    tb.Daq_Stop();
+
+    // stop ADC
+    tb.r4s_Enable(0);
+    tb.Daq_Read(data);// copies data form dtb to the PC
+
+    // close daq
+    tb.Daq_Close();
+    tb.Flush();
+
+    // check if there is data
+    if (data.size() == 924){
+
+        // one should have put the correct expected datalenth here (22 x 42 = 924)
+        // but we assume if there is data it is correct
+
+        // put sequencial data to array
+        int x, y;
+        if(columnwise){
+            for (x = 0; x < COLUMNS; x++){
+                for (y = 0; y < ROWS; y++) {
+                    int value = (int) data[y+ROWS*x];
+                    if ((value & 0x1000) != 0) // ADC overrange
+                        value = -5000;
+                    else if ((value & 0x0800) != 0) // negative
+                        value -= 0x1000;
+                    ana[x][y] = value;
+                    if(x<nx && y<ny) colorMap->data()->setCell(x, y, (double) value - darkfield[y+ROWS*x] );
+                }
+            }
+        } else {
+            for (y = 0; y < ROWS; y++) {
+                for (x = 0; x < COLUMNS; x++){
+                    int value = (int) data[x+COLUMNS*y];
+                    if ((value & 0x1000) != 0) // ADC overrange
+                        value = -5000;
+                    else if ((value & 0x0800) != 0) // negative
+                        value -= 0x1000;
+                    ana[x][y] = value;
+                    if(x<nx && y<ny) colorMap->data()->setCell(x, y, (double) value - darkfield[y+ROWS*x] );
+                }
+            }
+        }
+
+        eventTree->Fill();
+
+        eventCounter++;
+
+        if ((eventCounter%10)==0){
+            printf("Events taken: %d \n", eventCounter);
+            customPlot->replot();
+        }
+
+    }else{
+        printf("data.size() = %d \n", (int)data.size());
+    }
+
+    if ((eventCounter+1) >  ui->numberOfEvents->value()  ){
+
+        printf("Stop data taking after recording %d  events\n", eventCounter);
+        endTakeData();
+    }
+
+    // start take data sequence for next event
+
+    uint8_t roMode = 3;
+    tb.Daq_Open(50000); // Anzahl pixel: 42 x 22 = 924 waeren genug
+
+    // prepare ADC
+    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
+    tb.r4s_AdcDelay(7);
+    tb.r4s_Enable(roMode);
+    tb.uDelay(400);
+
+    tb.Daq_Start(); // macht adcs scharf
+    tb.r4s_Start(); // startet chip sequence
+    //tb.uDelay(3000)
+}
+
+void MainWindow::endTakeData(){
+
+    take_data_running=false;
+    ui->takeData->setText("Take Data");
+    ui->takeData->setChecked(false);
+    takeDataTimer->stop();
+
+    // close Daq
+    tb.r4s_Stop();
+    tb.Daq_Close();
+    tb.Flush();
+    eventCounter = 0;
+
+    eventTree->Write();
+    delete eventTree;
+
+    // close file, delete tree
+    fileOut->Close();
+    delete fileOut;
+
+}
+
+// =============================================
 
 void MainWindow::on_darkfield_clicked()
 {
@@ -233,23 +450,9 @@ void MainWindow::on_darkfield_clicked()
           }
        }
     }
-    onTimeout();
+    onLoopTimeout();
 }
 
-void MainWindow::on_loop_clicked()
-{
-    if(running){
-       running=false;
-       ui->loop->setText("Loop");
-       ui->loop->setChecked(false);
-       timer->stop();
-    }else {
-       running=true;
-       ui->loop->setText("Stop");
-       ui->loop->setChecked(true);
-       timer->start(200);
-    }
-}
 
 void MainWindow::on_columnwise_clicked()
 {
@@ -265,16 +468,24 @@ void MainWindow::on_rowwise_clicked()
     printf("Switching to rowwise readout.\n");
 }
 
-void MainWindow::DACScan(int DAC, int start, int stop, int step)
-{
-    std::map<int,double> result;
-    tb.DACScan(DAC, start, stop, step, result);
 
-    for(int i=start; i<=stop; i+=step)
-    {
-        printf("%d : %f\n",i,result[i]);
-    }
-    if(columnwise) tb.r4s_SetSeqMeasureColumnReadout();
-    else tb.r4s_SetSeqMeasureReadout();
+void MainWindow::on_internalCal_clicked()
+{
+    printf("Switching to internal calibrate\n");
+    triggerSource = 0;
+    //tb.r4s_SetSeq.....();
 }
 
+void MainWindow::on_laser_clicked()
+{
+    printf("Laser inf not yet implemented\n");
+    triggerSource = 1;
+    //tb.r4s_SetSeq.....();
+}
+
+void MainWindow::on_externalCal_clicked()
+{
+    printf("Source trigger not yet implemented\n");
+    triggerSource = 2;
+    //tb.r4s_SetSeq.....();
+}

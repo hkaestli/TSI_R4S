@@ -1,7 +1,7 @@
 // usb.cpp
 
 #ifndef _WIN32
-#include <libusb/libusb.h>
+#include <libusb.h>
 #include <cstring>
 #endif
 

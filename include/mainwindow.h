@@ -7,6 +7,10 @@
 #include <QMainWindow>
 #include <qcustomplot.h>
 
+#include <TFile.h>
+#include <TTree.h>
+
+
 namespace Ui {
 class MainWindow;
 }
@@ -34,29 +38,49 @@ private slots:
 
     void on_loop_clicked();
 
-    void onTimeout();
+    void on_takeData_clicked();
+
+    void onLoopTimeout();
+    void onTakeDataTimeout();
+
+
     void on_columnwise_clicked();
 
     void on_rowwise_clicked();
 
     void DACScan(int DAC, int start, int stop, int step);
 
+    void on_delayScan_clicked();
+
+    void on_internalCal_clicked();
+
+    void on_laser_clicked();
+
+    void on_externalCal_clicked();
+
 private:
     void GetFrame();
-
+    void endTakeData();
 
 private:
     int nx;
     int ny;
+    int eventCounter;
     bool dark;
-    bool running;
+    bool loop_running;
+    bool take_data_running;
     QCPColorMap *colorMap;
     QCustomPlot *customPlot;
     Ui::MainWindow *ui;
     std::vector<double> darkfield;
     std::vector<uint16_t> data;
-    QTimer *timer;
+    QTimer *loopTimer;
+    QTimer *takeDataTimer;
     bool columnwise;
+    int triggerSource;//  0: internal cal, 1: laser, 2: source
+    TFile *fileOut;
+    TTree *eventTree;
+    int ana[COLUMNS][ROWS];
 
 };
 
