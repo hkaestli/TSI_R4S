@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1288</width>
-    <height>927</height>
+    <width>1300</width>
+    <height>930</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,258 +17,10 @@
    <widget class="QCustomPlot" name="customPlot" native="true">
     <property name="geometry">
      <rect>
-      <x>50</x>
-      <y>20</y>
-      <width>621</width>
-      <height>601</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="vd" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>20</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="vddio" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>100</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="v18" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>60</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="biasd" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>140</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="biasr" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>180</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QTabWidget" name="tabWidget">
-    <property name="geometry">
-     <rect>
-      <x>710</x>
-      <y>230</y>
-      <width>521</width>
-      <height>331</height>
-     </rect>
-    </property>
-    <property name="currentIndex">
-     <number>0</number>
-    </property>
-    <widget class="QWidget" name="ninput">
-     <attribute name="title">
-      <string>N Input</string>
-     </attribute>
-     <widget class="CustomSlider" name="vana_n" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vcascn" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vn0" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vn1" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vn2" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>170</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vprfb" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>250</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="pinput">
-     <attribute name="title">
-      <string>P Input</string>
-     </attribute>
-     <widget class="CustomSlider" name="vana_p" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vcascp" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vp0" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vp1" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="vp2" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>170</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="readout">
-     <attribute name="title">
-      <string>Readout</string>
-     </attribute>
-     <widget class="CustomSlider" name="biasro" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="biasio" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-     <widget class="CustomSlider" name="offset" native="true">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>500</width>
-        <height>30</height>
-       </rect>
-      </property>
-     </widget>
-    </widget>
-   </widget>
-   <widget class="CustomSlider" name="vfb" native="true">
-    <property name="geometry">
-     <rect>
-      <x>722</x>
-      <y>472</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="vcal" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>580</y>
-      <width>500</width>
-      <height>30</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="CustomSlider" name="vhold" native="true">
-    <property name="geometry">
-     <rect>
-      <x>720</x>
-      <y>620</y>
-      <width>500</width>
-      <height>30</height>
+      <x>70</x>
+      <y>30</y>
+      <width>550</width>
+      <height>550</height>
      </rect>
     </property>
    </widget>
@@ -297,7 +49,7 @@ m</string>
     <property name="geometry">
      <rect>
       <x>320</x>
-      <y>630</y>
+      <y>600</y>
       <width>84</width>
       <height>28</height>
      </rect>
@@ -348,165 +100,540 @@ m</string>
      <string>Dark field correction</string>
     </property>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QTabWidget" name="tabWidget">
     <property name="geometry">
      <rect>
       <x>720</x>
-      <y>690</y>
-      <width>411</width>
-      <height>161</height>
+      <y>30</y>
+      <width>520</width>
+      <height>650</height>
      </rect>
     </property>
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_3">
-       <item>
-        <widget class="QPushButton" name="image">
-         <property name="text">
-          <string>Single</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="loop">
-         <property name="text">
-          <string>Loop</string>
-         </property>
-         <property name="checkable">
-          <bool>true</bool>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="clear">
-         <property name="text">
-          <string>Clear</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QPushButton" name="delayScan">
-         <property name="text">
-          <string>Delay scan</string>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <item>
-        <widget class="QPushButton" name="takeData">
-         <property name="text">
-          <string>Take Data</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="label_3">
-         <property name="text">
-          <string>Events</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QSpinBox" name="numberOfEvents">
-         <property name="maximum">
-          <number>10000</number>
-         </property>
-         <property name="singleStep">
-          <number>100</number>
-         </property>
-         <property name="value">
-          <number>100</number>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </item>
-     <item>
-      <layout class="QHBoxLayout" name="horizontalLayout_5">
-       <item>
-        <widget class="QLabel" name="label_4">
-         <property name="text">
-          <string>Signal source:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+    <property name="currentIndex">
+     <number>0</number>
+    </property>
+    <widget class="QWidget" name="cfg">
+     <attribute name="title">
+      <string>Setting</string>
+     </attribute>
+     <widget class="CEditConfig" name="configWidget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>10</y>
+        <width>490</width>
+        <height>601</height>
+       </rect>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="tab_2">
+     <attribute name="title">
+      <string>Tests</string>
+     </attribute>
+     <widget class="QLineEdit" name="plotname">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>70</y>
+        <width>113</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>VCal</string>
+      </property>
+     </widget>
+     <widget class="QTabWidget" name="testWidget">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>491</width>
+        <height>351</height>
+       </rect>
+      </property>
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
+      <widget class="QWidget" name="dac">
+       <attribute name="title">
+        <string>DAC scan</string>
+       </attribute>
+       <widget class="QLabel" name="label_5">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>43</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>DAC name</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_6">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>73</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Min</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_7">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>103</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Max</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_8">
+        <property name="geometry">
+         <rect>
+          <x>40</x>
+          <y>133</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Step</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="min">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>69</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string notr="true">0</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="max">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>100</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string notr="true">1400</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="step">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>131</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string notr="true">50</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="DAC">
+        <property name="geometry">
+         <rect>
+          <x>140</x>
+          <y>40</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string notr="true">vcal</string>
+        </property>
+        <property name="maxLength">
+         <number>10</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_col">
+        <property name="geometry">
+         <rect>
+          <x>300</x>
+          <y>70</y>
+          <width>58</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Col</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_row">
+        <property name="geometry">
+         <rect>
+          <x>300</x>
+          <y>100</y>
+          <width>58</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Row</string>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="col">
+        <property name="geometry">
+         <rect>
+          <x>360</x>
+          <y>67</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string notr="true">0</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QLineEdit" name="row">
+        <property name="geometry">
+         <rect>
+          <x>360</x>
+          <y>100</y>
+          <width>71</width>
+          <height>21</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string notr="true">0</string>
+        </property>
+        <property name="maxLength">
+         <number>4</number>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="dacscan">
+        <property name="geometry">
+         <rect>
+          <x>350</x>
+          <y>280</y>
+          <width>112</width>
+          <height>32</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Scan</string>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="full">
+        <property name="geometry">
+         <rect>
+          <x>260</x>
+          <y>40</y>
+          <width>86</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Full chip</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="dacdac">
+       <attribute name="title">
+        <string>DAC-DAC scan</string>
+       </attribute>
+      </widget>
+      <widget class="QWidget" name="takedata">
+       <attribute name="title">
+        <string>Take Data</string>
+       </attribute>
+       <widget class="QWidget" name="layoutWidget">
+        <property name="geometry">
+         <rect>
+          <x>50</x>
+          <y>50</y>
+          <width>391</width>
+          <height>161</height>
+         </rect>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout">
          <item>
-          <widget class="QRadioButton" name="internalCal">
-           <property name="text">
-            <string>internal cal</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-           <attribute name="buttonGroup">
-            <string notr="true">buttonGroup</string>
-           </attribute>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_2">
+           <item>
+            <widget class="QPushButton" name="takeData">
+             <property name="text">
+              <string>Take Data</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QLabel" name="label_3">
+             <property name="text">
+              <string>Events</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QSpinBox" name="numberOfEvents">
+             <property name="maximum">
+              <number>10000</number>
+             </property>
+             <property name="singleStep">
+              <number>100</number>
+             </property>
+             <property name="value">
+              <number>100</number>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
          <item>
-          <widget class="QRadioButton" name="laser">
-           <property name="text">
-            <string>laser</string>
-           </property>
-           <attribute name="buttonGroup">
-            <string notr="true">buttonGroup</string>
-           </attribute>
-          </widget>
-         </item>
-         <item>
-          <widget class="QRadioButton" name="externalCal">
-           <property name="text">
-            <string>source</string>
-           </property>
-           <attribute name="buttonGroup">
-            <string notr="true">buttonGroup</string>
-           </attribute>
-          </widget>
+          <layout class="QHBoxLayout" name="horizontalLayout_5">
+           <item>
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Signal source:</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_4">
+             <item>
+              <widget class="QRadioButton" name="internalCal">
+               <property name="text">
+                <string>internal cal</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="laser">
+               <property name="text">
+                <string>laser</string>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
+              </widget>
+             </item>
+             <item>
+              <widget class="QRadioButton" name="externalCal">
+               <property name="text">
+                <string>source</string>
+               </property>
+               <attribute name="buttonGroup">
+                <string notr="true">buttonGroup</string>
+               </attribute>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </item>
         </layout>
-       </item>
-      </layout>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QLabel" name="label_9">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>70</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Plot name</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_10">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>40</y>
+        <width>101</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>ROOT filename</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="filename">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>40</y>
+        <width>113</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>test.root</string>
+      </property>
+     </widget>
+     <widget class="QLineEdit" name="dir">
+      <property name="geometry">
+       <rect>
+        <x>390</x>
+        <y>10</y>
+        <width>113</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Test</string>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_11">
+      <property name="geometry">
+       <rect>
+        <x>280</x>
+        <y>10</y>
+        <width>58</width>
+        <height>16</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Directory</string>
+      </property>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>770</x>
+      <y>700</y>
+      <width>409</width>
+      <height>32</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QPushButton" name="loop">
+       <property name="text">
+        <string>Loop</string>
+       </property>
+       <property name="checkable">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
      <item>
-      <layout class="QHBoxLayout" name="horizontalLayout">
-       <item>
-        <widget class="QLabel" name="label_2">
-         <property name="text">
-          <string>Readout:</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="columnwise">
-         <property name="text">
-          <string>column wise</string>
-         </property>
-         <property name="checked">
-          <bool>true</bool>
-         </property>
-         <attribute name="buttonGroup">
-          <string notr="true">buttonGroup_2</string>
-         </attribute>
-        </widget>
-       </item>
-       <item>
-        <widget class="QRadioButton" name="rowwise">
-         <property name="text">
-          <string>row wise</string>
-         </property>
-         <attribute name="buttonGroup">
-          <string notr="true">buttonGroup_2</string>
-         </attribute>
-        </widget>
-       </item>
-      </layout>
+      <widget class="QPushButton" name="clear">
+       <property name="text">
+        <string>Clear</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="image">
+       <property name="text">
+        <string>Single</string>
+       </property>
+      </widget>
      </item>
     </layout>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>840</x>
+      <y>747</y>
+      <width>91</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Readout:</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="rowwise">
+    <property name="geometry">
+     <rect>
+      <x>1072</x>
+      <y>751</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>row wise</string>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup_2</string>
+    </attribute>
+   </widget>
+   <widget class="QRadioButton" name="columnwise">
+    <property name="geometry">
+     <rect>
+      <x>929</x>
+      <y>751</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>column wise</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+    <attribute name="buttonGroup">
+     <string notr="true">buttonGroup_2</string>
+    </attribute>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -514,7 +641,7 @@ m</string>
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1288</width>
+     <width>1300</width>
      <height>22</height>
     </rect>
    </property>
@@ -532,15 +659,21 @@ m</string>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
+   <class>CustomSlider</class>
+   <extends>QWidget</extends>
+   <header>customslider.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
    <header>qcustomplot.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>CustomSlider</class>
+   <class>CEditConfig</class>
    <extends>QWidget</extends>
-   <header>customslider.h</header>
+   <header location="global">ceditconfig.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

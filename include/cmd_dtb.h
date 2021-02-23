@@ -13,7 +13,6 @@
  * -------------------------------------------------------------
  */
 
-
 // =======================================================================
 //  connection, communication, startup commands
 // =======================================================================
@@ -134,3 +133,4 @@ CMD_REG(vanap, "<mV>", "Set Roc4sens Vana_p")
 CMD_REG(vdig, "<mV>", "Set Roc4sens Vdig")
 
 CMD_REG(i2c, "<addr> <cmd> <hdata> <ldata>", "Tests I2C communication")
+

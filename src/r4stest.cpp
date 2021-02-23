@@ -14,11 +14,11 @@
 
 #include <string>
 #include <vector>
-#include "r4stest.h"
-
-#include "profiler.h"
-
 #include "mainwindow.h"
+
+#include "r4stest.h"
+#include "profiler.h"
+#include "configuration.h"
 
 using namespace std;
 
@@ -26,6 +26,7 @@ using namespace std;
 // --- globals ---------------------------------------
 int nEntry; // counts the chip tests
 
+CConfiguration cfg;
 CTestboard tb;
 CSettings settings;  // global settings
 CProtocol Log;
@@ -42,7 +43,6 @@ string filename;
 
 int main(int argc, char* argv[])
 {
-    MyQApplication app(argc, argv);
 	string usbId;
 	printf(VERSIONINFO "\n");
 
@@ -101,6 +101,8 @@ int main(int argc, char* argv[])
 
 		Log.flush();
 
+        MyQApplication app(argc, argv);
+
 		// --- call command interpreter -----------------------
 		nEntry = 0;
 
@@ -111,7 +113,8 @@ int main(int argc, char* argv[])
         tb.SetIA(3000);
         tb.Flush();
         cmd();
-
+        tb.Poff();
+        tb.Flush();
 		tb.Close();
 	}
 	catch (CRpcError &e)

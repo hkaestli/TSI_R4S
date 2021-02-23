@@ -17,15 +17,13 @@
 #include "rpc.h"
 #include "config.h"
 #include <map>
+#include "dictionary.h"
 
 #ifdef _WIN32
 #include "pipe.h"
 #endif
 
 #include "usb.h"
-
-enum DACs{VanaN, VanaP, Vdig, VDDIO, V18, BiasD, BiasR, VcascN, Vn0, Vn1, Vn2,
-          Vfb, Vprfb, VcascP, Vp0, Vp1, Vp2, Vcal, Hold, IBiasRO, IBiasIO, VOffset};
 
 class CDUT
 {

@@ -13,10 +13,17 @@
  */
 
 #include "cmd.h"
+#include "configuration.h"
+#include "dictionary.h"
+
+extern CConfiguration cfg;
 
 int tspan = 1024;
 int tcal  = 512;
 int thold = 514;
+
+
+CDictionary dict;
 
 // =======================================================================
 //  connection, communication, startup commands
@@ -618,7 +625,7 @@ CMD_PROC(thold)
 			tspan = thold + 2;
 			tb.r4s_SetMeasureSpan(tspan);
 		}
-        tb.SetThold(t);
+        cfg.setData(cfg.index(dict.Id("thold")), thold);
 	DO_FLUSH
 }
 
@@ -666,7 +673,7 @@ CMD_PROC(ibiasio)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetIbiasIO(mV);
+    cfg.setData(cfg.index(dict.Id("ibiasio")), mV);
 	DO_FLUSH
 }
 
@@ -674,7 +681,7 @@ CMD_PROC(voffset)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVoffset(mV);
+    cfg.setData(cfg.index(dict.Id("voffset")), mV);
 	DO_FLUSH
 }
 
@@ -682,7 +689,7 @@ CMD_PROC(vfb)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVfb(mV);
+    cfg.setData(cfg.index(dict.Id("vfb")), mV);
 	DO_FLUSH
 }
 
@@ -690,7 +697,7 @@ CMD_PROC(vn2)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVn2(mV);
+    cfg.setData(cfg.index(dict.Id("vn2")), mV);
 	DO_FLUSH
 }
 
@@ -698,7 +705,7 @@ CMD_PROC(vn1)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVn1(mV);
+    cfg.setData(cfg.index(dict.Id("vn1")), mV);
 	DO_FLUSH
 }
 
@@ -706,7 +713,7 @@ CMD_PROC(vn0)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVn0(mV);
+    cfg.setData(cfg.index(dict.Id("vn0")), mV);
 	DO_FLUSH
 }
 
@@ -714,7 +721,7 @@ CMD_PROC(vcascn)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVcascN(mV);
+    cfg.setData(cfg.index(dict.Id("vcascn")), mV);
 	DO_FLUSH
 }
 
@@ -722,7 +729,7 @@ CMD_PROC(vbiasd)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVbiasD(mV);
+    cfg.setData(cfg.index(dict.Id("vbiasd")), mV);
 	DO_FLUSH
 }
 
@@ -730,7 +737,7 @@ CMD_PROC(ibiasro)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetIbiasRO(mV);
+    cfg.setData(cfg.index(dict.Id("ibiasro")), mV);
 	DO_FLUSH
 }
 
@@ -738,7 +745,7 @@ CMD_PROC(vcal)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVcal(mV);
+    cfg.setData(cfg.index(dict.Id("vcal")), mV);
 	DO_FLUSH
 }
 
@@ -746,7 +753,7 @@ CMD_PROC(vbiasr)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVbiasR(mV);
+    cfg.setData(cfg.index(dict.Id("vbiasr")), mV);
 	DO_FLUSH
 }
 
@@ -754,7 +761,7 @@ CMD_PROC(vprefb)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVprefb(mV);
+    cfg.setData(cfg.index(dict.Id("vprefb")), mV);
 	DO_FLUSH
 }
 
@@ -762,7 +769,7 @@ CMD_PROC(vcascp)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVcascP(mV);
+    cfg.setData(cfg.index(dict.Id("vcascp")), mV);
 	DO_FLUSH
 }
 
@@ -770,7 +777,7 @@ CMD_PROC(vp0)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVp0(mV);
+    cfg.setData(cfg.index(dict.Id("vp0")), mV);
 	DO_FLUSH
 }
 
@@ -778,7 +785,7 @@ CMD_PROC(vp1)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVp1(mV);
+    cfg.setData(cfg.index(dict.Id("vp1")), mV);
 	DO_FLUSH
 }
 
@@ -786,7 +793,7 @@ CMD_PROC(vp2)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVp2(mV);
+    cfg.setData(cfg.index(dict.Id("vp2")), mV);
 	DO_FLUSH
 }
 
@@ -794,7 +801,7 @@ CMD_PROC(v18)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetV18(mV);
+    cfg.setData(cfg.index(dict.Id("v18")), mV);
 	DO_FLUSH
 }
 
@@ -802,7 +809,7 @@ CMD_PROC(vanan)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVanaN(mV);
+    cfg.setData(cfg.index(dict.Id("vanan")), mV);
 	DO_FLUSH
 }
 
@@ -810,7 +817,7 @@ CMD_PROC(vddio)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVddio(mV);
+    cfg.setData(cfg.index(dict.Id("vddio")), mV);
 	DO_FLUSH
 }
 
@@ -818,7 +825,7 @@ CMD_PROC(vanap)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVanaP(mV);
+    cfg.setData(cfg.index(dict.Id("vanap")), mV);
 	DO_FLUSH
 }
 
@@ -826,7 +833,7 @@ CMD_PROC(vdig)
 {
 	int mV;
 	PAR_INT(mV, 0, 2047)
-    tb.SetVdig(mV);
+    cfg.setData(cfg.index(dict.Id("vdig")), mV);
 	DO_FLUSH
 }
 

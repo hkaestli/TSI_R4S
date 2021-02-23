@@ -2,6 +2,7 @@
 #define CUSTOMSLIDER_H
 
 #include <QWidget>
+#include <QAbstractItemModel>
 #include "ui_customslider.h"
 #include "pixel_dtb.h"
 
@@ -18,18 +19,18 @@ class CustomSlider : public QWidget
 public:
     explicit CustomSlider(QWidget *parent = 0);
     ~CustomSlider();
-    void Init(void (CTestboard::*member)(int), int value, int minimum, int maximum, QString name, QString unit="mV");
     void Init(int value, int minimum, int maximum, QString name, QString unit="mV");
 
 public slots:
     void on_value_editingFinished();
     void on_slider_valueChanged(int position);
-
-
+    void showValue(int number);
+    void setModel(QAbstractItemModel *c, QModelIndex in) { model=c; index=in;};
+    QString getName(){ return ui->name->text();};
 private:
     Ui::CustomSlider *ui;
-    int maximum, minimum;
-    void (CTestboard::*func)(int);
+    QAbstractItemModel *model;
+    QModelIndex index;
 };
 
 #endif // CUSTOMSLIDER_H

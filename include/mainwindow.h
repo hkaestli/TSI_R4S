@@ -10,6 +10,9 @@
 #include <TFile.h>
 #include <TTree.h>
 
+#include "configuration.h"
+
+extern CConfiguration cfg;
 
 namespace Ui {
 class MainWindow;
@@ -24,7 +27,6 @@ public:
     ~MainWindow();
     void setupColorMap(QCustomPlot *customPlot);
     void Init();
-
 private slots:
     void on_clear_pressed();
 
@@ -43,7 +45,6 @@ private slots:
     void onLoopTimeout();
     void onTakeDataTimeout();
 
-
     void on_columnwise_clicked();
 
     void on_rowwise_clicked();
@@ -57,6 +58,14 @@ private slots:
     void on_laser_clicked();
 
     void on_externalCal_clicked();
+
+    void on_loadScript_clicked();
+
+    void on_tab_currentChanged(int index);
+
+    void on_full_stateChanged(int arg1);
+
+    void on_dacscan_clicked();
 
 private:
     void GetFrame();
@@ -81,7 +90,6 @@ private:
     TFile *fileOut;
     TTree *eventTree;
     int ana[COLUMNS][ROWS];
-
 };
 
 class MyQApplication : QApplication

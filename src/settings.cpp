@@ -135,7 +135,7 @@ bool CSettings::Read(const char filename[])
 			std::string s;
 			ReadTag(s);
 			if      (s == "DTB_ID")             dtbId = ReadInt(-1, 1000);
-			else if (s == "SCRIPT_PATH")        ReadString(scriptPath);
+            else if (s == "SCRIPT")             ReadString(scriptPath);
 			else if (s == "PROBER_PORT")        proberPort = ReadInt(-1, 99);
 			else if (s == "ROC_TYPE")           rocType = ReadInt(0, 2);
 			else if (s == "SENSOR")             sensor = ReadBool();

@@ -105,8 +105,8 @@ const CSymbol CCmdLine::symtable[] =
     { "vdig",		Vdig },
     { "vddio",		VDDIO },
     { "v18",		V18 },
-    { "biasd",		BiasD },
-    { "biasr",		BiasR },
+    { "vbiasd",		BiasD },
+    { "vbiasr",		BiasR },
     { "vcascn",		VcascN },
     { "vn0",		Vn0 },
     { "vn1",		Vn1 },
@@ -379,7 +379,7 @@ bool CInterpreter::run(FILE *f, int iter)
 		CCommand *p = cmdList.Find(cmdline.getName());
 		if (p) { p->m_exec(cmdline); }
 		else if (cmdline.isCmd("help")) help();
-		else if (cmdline.isCmd("exit")) break;
+        else if (cmdline.isCmd("exit")) break;
 		else
 		{
 			char *fname = new char[CMDLINELENGTH+256+8];

@@ -1,11 +1,10 @@
-#include "include/customslider.h"
+#include "customslider.h"
 
 
 CustomSlider::CustomSlider(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::CustomSlider)
+    ui(new Ui::CustomSlider), model(nullptr)
 {
-    func=NULL;
     ui->setupUi(this);
     connect(ui->slider,&QSlider::sliderMoved, this, &CustomSlider::on_slider_valueChanged);
     connect(ui->value, &QLineEdit::editingFinished , this, &CustomSlider::on_value_editingFinished);
@@ -16,51 +15,31 @@ CustomSlider::~CustomSlider()
     delete ui;
 }
 
-void CustomSlider::on_slider_valueChanged(int position)
+void CustomSlider::on_slider_valueChanged(int value)
 {
-    ui->value->setText(QString::number( position ) );
-    if(func)(tb.*func)(position);
-    tb.Flush();
+   if(model) {
+       model->setData(index, value);
+   }
 }
 
 void CustomSlider::on_value_editingFinished()
 {
-    int value=ui->value->text().toInt();
-    if (value<minimum) {
-        value=minimum;
-        ui->value->setText(QString::number(value));
-    } else if (value>maximum){
-        value=maximum;
-        ui->value->setText(QString::number(value));
+    if(model){
+       int value=ui->value->text().toInt();
+       model->setData(index, value);
     }
-    ui->slider->setSliderPosition(value);
-    if(func) (tb.*func)(value);
-    tb.Flush();
 }
 
-void CustomSlider::Init(void(CTestboard::*member)(int), int value, int min, int max, QString name, QString unit){
-    func=member;
-    minimum=min;
-    maximum=max;
-    ui->name->setText(name);
-    ui->unit->setText(unit);
-    ui->slider->setRange(minimum, maximum);
-    if(value<minimum) value=minimum;
-    if(value>maximum) value=maximum;
-    ui->value->setText(QString::number(value));
-    ui->slider->setSliderPosition(value);
-    ui->slider->setSingleStep(10);
+void CustomSlider::showValue(int number)
+{
+    ui->value->setText(QString::number(number));
+    ui->slider->setSliderPosition(number);
 }
 
 void CustomSlider::Init(int value, int min, int max, QString name, QString unit){
-    func=NULL;
-    minimum=min;
-    maximum=max;
     ui->name->setText(name);
     ui->unit->setText(unit);
-    ui->slider->setRange(minimum, maximum);
-    if(value<minimum) value=minimum;
-    if(value>maximum) value=maximum;
+    ui->slider->setRange(min, max);
     ui->value->setText(QString::number(value));
     ui->slider->setSliderPosition(value);
     ui->slider->setSingleStep(10);

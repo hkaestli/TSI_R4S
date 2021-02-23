@@ -1,11 +1,19 @@
-#include "../include/mainwindow.h"
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "command.h"
+
+#include <TFile.h>
+#include <TH1D.h>
+
+extern CInterpreter cmd_intp;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent), dark(false), loop_running(false), take_data_running(false),
     ui(new Ui::MainWindow)
 {
+    cfg.Init();
     ui->setupUi(this);
+    ui->configWidget->setModel(&cfg);
     setupColorMap(ui->customPlot);
     darkfield.resize(COLUMNS*ROWS,0.0);
     data.resize(COLUMNS*ROWS,0);
@@ -23,40 +31,14 @@ MainWindow::~MainWindow()
 
 void MainWindow::Init()
 {
-   ui->vana_n->Init(&CTestboard::SetVanaN, tb.GetVanaN(), 0, 1800, "Vana N");
-   ui->vana_p->Init(&CTestboard::SetVanaP, tb.GetVanaP(), 0, 1800, "Vana P");
-   ui->vd->Init(&CTestboard::SetVdig, tb.GetVdig(), 0, 2000, "Vdig");
-   ui->vddio->Init(&CTestboard::SetVddio, tb.GetVddio(), 0, 1800, "VDDIO");
-   ui->v18->Init(&CTestboard::SetV18, tb.GetV18(), 0, 1800, "V18");
-   ui->biasd->Init(&CTestboard::SetVbiasD, tb.GetVbiasD(), 0, 2400, "Bias D");
-   ui->biasr->Init(&CTestboard::SetVbiasR, tb.GetVbiasR(), 0, 1800, "Bias R");
-   ui->vcascn->Init(&CTestboard::SetVcascN, tb.GetVcascN(), 0, 1800, "Vcasc N");
-   ui->vn0->Init(&CTestboard::SetVn0, tb.GetVn0(), 0, 1800, "Vn0");
-   ui->vn1->Init(&CTestboard::SetVn1, tb.GetVn1(), 0, 1800, "Vn1");
-   ui->vn2->Init(&CTestboard::SetVn2, tb.GetVn2(), 0, 1800, "Vn2");
-   ui->vfb->Init(&CTestboard::SetVfb, tb.GetVfb(), 0, 1800, "Vfb");
-   ui->vprfb->Init(&CTestboard::SetVprefb, tb.GetVprefb(), 0, 1800, "Vprfb");
-   ui->vcascp->Init(&CTestboard::SetVcascP, tb.GetVcascP(), 0, 1800, "Vcasc P");
-   ui->vp0->Init(&CTestboard::SetVp0, tb.GetVp0(), 0, 1800, "Vp0");
-   ui->vp1->Init(&CTestboard::SetVp1, tb.GetVp1(), 0, 1800, "Vp1");
-   ui->vp2->Init(&CTestboard::SetVp2, tb.GetVp2(), 0, 1800, "Vp2");
-
-   ui->vcal->Init(&CTestboard::SetVcal, tb.GetVcal(), 0, 1800, "Vcal");
-   int thold=tb.GetThold();
-   ui->vhold->Init(&CTestboard::SetThold, thold, min(thold,1500), 3000, "t hold","a/u");
-
-   ui->biasro->Init(&CTestboard::SetIbiasRO, tb.GetIbiasRO(), 0, 2000, "IBias ro");
-   ui->biasio->Init(&CTestboard::SetIbiasIO, tb.GetIbiasIO(), 0, 2000, "IBias I/O");
-   ui->offset->Init(&CTestboard::SetVoffset, tb.GetVoffset(), 0, 1800, "VOffset");
-
    ui->average->Init(1, 1, 100, "Average","Frames");
 
    connect(loopTimer, &QTimer::timeout, this, &MainWindow::onLoopTimeout);
    connect(takeDataTimer, &QTimer::timeout, this, &MainWindow::onTakeDataTimeout);
-
+   connect(ui->configWidget->tabWidget, &QTabWidget::currentChanged, this, &MainWindow::on_tab_currentChanged);
+   connect(ui->configWidget->loadScript, &QPushButton::clicked, this, &MainWindow::on_loadScript_clicked);
    on_columnwise_clicked();
    on_internalCal_clicked();
-
 }
 
 void MainWindow::setupColorMap(QCustomPlot *cP)
@@ -83,6 +65,7 @@ void MainWindow::setupColorMap(QCustomPlot *cP)
   }
 
   // add a color scale:
+
   QCPColorScale *colorScale = new QCPColorScale(customPlot);
   customPlot->plotLayout()->addElement(0, 1, colorScale); // add it to the right of the main axis rect
   colorScale->setType(QCPAxis::atRight); // scale shall be vertical bar with tick/axis labels right (actually atRight is already the default)
@@ -488,4 +471,80 @@ void MainWindow::on_externalCal_clicked()
     printf("Source trigger not yet implemented\n");
     triggerSource = 2;
     //tb.r4s_SetSeq.....();
+}
+
+void MainWindow::on_tab_currentChanged(int index)
+{
+    cfg.Activate(index);
+}
+
+void MainWindow::on_loadScript_clicked()
+{
+    QString script=QString("script/")+ui->configWidget->getScript()+".roc";
+    FILE *cf = fopen(script.toStdString().c_str(), "rt");
+    if (cf) {
+        cmd_intp.run(cf, 1);
+        fclose(cf);
+    }
+}
+
+void MainWindow::on_full_stateChanged(int arg1)
+{
+    if(arg1){
+        ui->col->hide();
+        ui->row->hide();
+        ui->label_col->hide();
+        ui->label_row->hide();
+    } else {
+        ui->col->show();
+        ui->row->show();
+        ui->label_col->show();
+        ui->label_row->show();
+    }
+}
+
+void MainWindow::on_dacscan_clicked()
+{
+    bool ok;
+    CDictionary dict;
+    int DAC=dict.Id(ui->DAC->text());
+    int start=ui->min->text().toInt(&ok);
+    int stop=ui->max->text().toInt(&ok);
+    int step=ui->step->text().toInt(&ok);
+    QString filename=ui->dir->text();
+    QDir dir;
+    dir.mkpath(filename);
+    filename+="/";
+    filename+=ui->filename->text();
+    TFile *rootFile = new TFile(filename.toStdString().c_str(),"recreate");
+    std::map<int,double> result;
+    int col_min=ui->col->text().toInt();
+    int row_min=ui->row->text().toInt();
+    int col_max, row_max;
+    if(ui->full->isChecked()){
+        col_min=20;
+        col_max=39;
+        row_min=0;
+        row_max=19;
+    } else{
+        col_max=col_min;
+        row_max=row_min;
+    }
+    TH1D* hists[40*20];
+    for(int col=col_min; col<=col_max; col++){
+        for(int row=row_min; row<=row_max; row++){
+            tb.SetPixCal(col,row);
+            result.clear();
+            tb.DACScan(DAC, start, stop, step, result);
+
+            hists[col*20+row]=new TH1D(Form("ph_c%2d_r%2d",col,row),Form("%s Scan Column %2d Row %2d",ui->plotname->text().toStdString().c_str(), col,row), (stop-start)/step , (double) start, (double) stop);
+            for(int i=start; i<=stop; i+=step)
+            {
+               hists[col*20+row]->Fill((double) i+step/2, result[i]);
+            }
+        }
+    }
+    rootFile->Write();
+    rootFile->Close();
+    delete rootFile;
 }
