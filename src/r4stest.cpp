@@ -19,6 +19,7 @@
 #include "r4stest.h"
 #include "profiler.h"
 #include "configuration.h"
+#include <TROOT.h>
 
 using namespace std;
 
@@ -64,7 +65,7 @@ int main(int argc, char* argv[])
 		printf("log: error creating file\n");
 		return 3;
 	}
-
+    gROOT->GetInterpreter();
 	// --- open test board --------------------------------
 	Log.section("DTB");
 	try

@@ -522,7 +522,7 @@ void MainWindow::on_dacscan_clicked()
     int row_min=ui->row->text().toInt();
     int col_max, row_max;
     if(ui->full->isChecked()){
-        col_min=20;
+        col_min=0;
         col_max=39;
         row_min=0;
         row_max=19;
@@ -533,6 +533,7 @@ void MainWindow::on_dacscan_clicked()
     TH1D* hists[40*20];
     for(int col=col_min; col<=col_max; col++){
         for(int row=row_min; row<=row_max; row++){
+            cfg.Activate(col, row);
             tb.SetPixCal(col,row);
             result.clear();
             tb.DACScan(DAC, start, stop, step, result);

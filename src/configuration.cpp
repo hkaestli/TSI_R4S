@@ -116,9 +116,9 @@ void CConfiguration::Activate(int cfg)
 
 void CConfiguration::Activate(int col, int row)
 {
-    int cfg=NMOS_LINEAR;                            // linear NMOS input amplifiers
+    int cfg=NMOS_ELT;                               // ELT NMOS input amplifiers
     if(col>19) cfg=PMOS;                            // PMOS input amplifiers
-    else if(col<10 && row<5) cfg=NMOS_ELT;          // ELT NMOS input amplifiers
+    else if(col<10 && row>4) cfg=NMOS_LINEAR;       // linear NMOS input amplifiers
     Activate(cfg);
 }
 
