@@ -11,6 +11,7 @@
 #include <TTree.h>
 
 #include "configuration.h"
+#include "dictionary.h"
 
 extern CConfiguration cfg;
 
@@ -75,6 +76,8 @@ private:
     int nx;
     int ny;
     int eventCounter;
+    int old_Vcal_Dac_value;
+    CDictionary dictDac;
     bool dark;
     bool loop_running;
     bool take_data_running;
