@@ -82,7 +82,7 @@ public:
     {
             return createIndex(activeConfiguration, column);
     };
-
+    void setDAC(int DAC, int value);
 public slots:
     void currentChanged(int index) { Activate(index);};
 

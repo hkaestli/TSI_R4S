@@ -234,7 +234,7 @@ CMD_PROC(dacscan)
 
 CMD_PROC(dacdacscan)
 {
-    std::map<int,double> result;
+    std::vector<double> result;
     int DAC1,start1, stop1, step1;
     int DAC2,start2, stop2, step2;
     PAR_INT(DAC1, 0, 21);
@@ -248,13 +248,18 @@ CMD_PROC(dacdacscan)
     tb.DACDACScan(DAC1, start1, stop1, step1,
                DAC2, start2, stop2, step2, result);
 
-    int stop=max(stop1, stop2);
+    int nbins2=(stop2-start2)/step2+1;
+    int a=0;
+    int b=0;
     for(int i=start1; i<=stop1; i+=step1)
     {
+        b=0;
         for(int j=start2; j<=stop2; j+=step2)
         {
-            printf("%d  %d : %f\n",i, j, result[j+i*stop]);
+            printf("%d  %d: %f\n",i, j, result[b+a*nbins2]);
+            b++;
         }
+        a++;
         printf("\n");
     }
 }

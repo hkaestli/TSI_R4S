@@ -49,10 +49,6 @@ private slots:
 
     void on_rowwise_clicked();
 
-    void DACScan(int DAC, int start, int stop, int step);
-
-    void on_delayScan_clicked();
-
     void on_internalCal_clicked();
 
     void on_laser_clicked();
@@ -66,6 +62,10 @@ private slots:
     void on_full_stateChanged(int arg1);
 
     void on_dacscan_clicked();
+
+    void on_full_2_stateChanged(int arg1);
+
+    void on_dacscan_2_clicked();
 
 private:
     void GetFrame();

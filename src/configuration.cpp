@@ -103,6 +103,14 @@ bool CConfiguration::setData(const QModelIndex &index, const QVariant &value, in
     return false;
 }
 
+void CConfiguration::setDAC(int DAC, int value)
+{
+    if(DAC<0 || DAC>PARAMETERS) return;
+    configurations[activeConfiguration][DAC].setValue(value);
+    QModelIndex index=createIndex(activeConfiguration, DAC);
+    emit dataChanged(index, index, {Qt::DisplayRole});
+}
+
 void CConfiguration::Activate(int cfg)
 {
     if(cfg<0 || cfg>CONFIGURATIONS) return;

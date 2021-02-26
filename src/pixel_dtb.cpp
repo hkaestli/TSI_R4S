@@ -290,6 +290,7 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
     for(int i=start; i<=stop; i+=step)
     {
         SetDAC(DAC, i);
+        uDelay(5000);
         // take data
         r4s_Start();
         uDelay(3000);
@@ -323,8 +324,9 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
 }
 
 void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
-                            int DAC2, int start2, int stop2, int step2, std::map<int,double> &result)
+                            int DAC2, int start2, int stop2, int step2, std::vector<double> &result)
 {
+    result.clear();
     int old_value1=GetDAC(DAC1);
     int old_value2=GetDAC(DAC2);
     int x,y;
@@ -358,6 +360,7 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
         for(int j=start2; j<=stop2; j+=step2)
         {
             SetDAC(DAC2, j);
+            uDelay(5000);
             // take data
             r4s_Start();
             uDelay(3000);
@@ -371,10 +374,8 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
     Daq_Read(data);
     Daq_Close();
     Flush();
-
     int n=0;
     double mean;
-    int stop=max(stop1, stop2);
     for(int i=start1; i<=stop1; i+=step1)
     {
         for(int j=start2; j<=stop2; j+=step2)
@@ -388,7 +389,7 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
               mean+=(double)value;
            }
            mean=mean/10.0;
-           result[j+i*stop]=mean;
+           result.push_back(mean);
         }
     }
     SetDAC(DAC1, old_value1);

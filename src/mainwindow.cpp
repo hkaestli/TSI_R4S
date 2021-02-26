@@ -4,6 +4,7 @@
 
 #include <TFile.h>
 #include <TH1D.h>
+#include <TH2D.h>
 
 extern CInterpreter cmd_intp;
 
@@ -114,32 +115,6 @@ void MainWindow::on_unzoom_y_clicked()
 {
     customPlot->yAxis->setRange(-0.5, (double)ny -0.5);
     customPlot->replot();
-}
-
-
-void MainWindow::on_delayScan_clicked()
-{
-    if(loop_running){
-        printf("Stop loop before clicking delay scan\n");
-    }else if (take_data_running) {
-        printf("Stop data taking before clicking delay scan\n");
-    }else{
-        DACScan(Hold,2500,2550,1);
-    }
-
-}
-
-void MainWindow::DACScan(int DAC, int start, int stop, int step)
-{
-    std::map<int,double> result;
-    tb.DACScan(DAC, start, stop, step, result);
-
-    for(int i=start; i<=stop; i+=step)
-    {
-        printf("%d : %f\n",i,result[i]);
-    }
-    if(columnwise) tb.r4s_SetSeqMeasureColumnReadout();
-    else tb.r4s_SetSeqMeasureReadout();
 }
 
 //======================================================
@@ -503,6 +478,21 @@ void MainWindow::on_full_stateChanged(int arg1)
     }
 }
 
+void MainWindow::on_full_2_stateChanged(int arg1)
+{
+    if(arg1){
+        ui->col_2->hide();
+        ui->row_2->hide();
+        ui->label_col_2->hide();
+        ui->label_row_2->hide();
+    } else {
+        ui->col_2->show();
+        ui->row_2->show();
+        ui->label_col_2->show();
+        ui->label_row_2->show();
+    }
+}
+
 void MainWindow::on_dacscan_clicked()
 {
     bool ok;
@@ -538,7 +528,7 @@ void MainWindow::on_dacscan_clicked()
             result.clear();
             tb.DACScan(DAC, start, stop, step, result);
 
-            hists[col*20+row]=new TH1D(Form("ph_c%2d_r%2d",col,row),Form("%s Scan Column %2d Row %2d",ui->plotname->text().toStdString().c_str(), col,row), (stop-start)/step , (double) start, (double) stop);
+            hists[col*20+row]=new TH1D(Form("ph_c%02d_r%02d",col,row),Form("%s Scan Column %2d Row %2d",ui->plotname->text().toStdString().c_str(), col,row), (stop-start)/step , (double) start, (double) stop);
             for(int i=start; i<=stop; i+=step)
             {
                hists[col*20+row]->Fill((double) i+step/2, result[i]);
@@ -548,4 +538,66 @@ void MainWindow::on_dacscan_clicked()
     rootFile->Write();
     rootFile->Close();
     delete rootFile;
+}
+
+
+void MainWindow::on_dacscan_2_clicked()
+{
+    bool ok;
+     CDictionary dict;
+     int DAC1=dict.Id(ui->DAC_21->text());
+     int start1=ui->min_21->text().toInt(&ok);
+     int stop1=ui->max_21->text().toInt(&ok);
+     int step1=ui->step_21->text().toInt(&ok);
+     int DAC2=dict.Id(ui->DAC_22->text());
+     int start2=ui->min_22->text().toInt(&ok);
+     int stop2=ui->max_22->text().toInt(&ok);
+     int step2=ui->step_22->text().toInt(&ok);
+     QString filename=ui->dir->text();
+     QDir dir;
+     dir.mkpath(filename);
+     filename+="/";
+     filename+=ui->filename->text();
+     TFile *rootFile = new TFile(filename.toStdString().c_str(),"recreate");
+     std::vector<double> result;
+     int col_min=ui->col_2->text().toInt();
+     int row_min=ui->row_2->text().toInt();
+     int col_max, row_max;
+     if(ui->full_2->isChecked()){
+         col_min=0;
+         col_max=39;
+         row_min=0;
+         row_max=19;
+     } else{
+         col_max=col_min;
+         row_max=row_min;
+     }
+     TH2D* hists[40*20];
+     int nbins1=(stop1-start1)/step1+1;
+     int nbins2=(stop2-start2)/step2+1;
+     for(int col=col_min; col<=col_max; col++){
+         for(int row=row_min; row<=row_max; row++){
+             cfg.Activate(col, row);
+             tb.SetPixCal(col,row);
+             result.clear();
+             tb.DACDACScan(DAC1, start1, stop1, step1, DAC2, start2, stop2, step2, result);
+             hists[col*20+row]=new TH2D(Form("ph_c%02d_r%02d",col,row),Form("%s Scan Column %2d Row %2d",ui->plotname->text().toStdString().c_str(), col,row),
+                                        nbins1 , (double) start1-step1/2, (double) stop1+step1/2,
+                                        nbins2 , (double) start2-step2/2, (double) stop2+step2/2);
+             int a=0;
+             int b=0;
+             for(int i=start1; i<=stop1; i+=step1) {
+                 a=0;
+                 for(int j=start2; j<=stop2; j+=step2) {
+                     hists[col*20+row]->Fill((double) i, (double) j, result[b+a*nbins2]);
+                     b++;
+                 }
+                 a++;
+             }
+         }
+     }
+     rootFile->Write();
+     rootFile->Close();
+     delete rootFile;
+
 }
