@@ -235,6 +235,24 @@ void MainWindow::on_takeData_clicked(){
             ui->takeData->setText("Stop");
             ui->takeData->setChecked(true);
 
+            // check for the signal source (cal/laser/ext)
+            if (ui->internalCal->isChecked()){
+                // do nothing as this is default
+            }else if (ui->laser->isChecked()){
+
+                // connect cal to D1-lemo, set Vcal to 0
+                tb.SignalProbeD1(10);// signal 10 = cal pulse
+
+                // find the active Vcal slider
+                old_Vcal_Dac_value = tb.GetVcal();
+                printf("Vcal was %d \n is set to 0",old_Vcal_Dac_value );
+                cfg.setDAC(dictDac.Id("vcal"),0);
+
+            }else if (ui->externalCal->isChecked()) {
+                // change sequence, set Vacl to 0
+            }
+
+
             eventCounter = 0;
             int n = ui->numberOfEvents->value();
             printf("Take Data clicked. Start data taking of %d events.\n", n);
@@ -367,6 +385,9 @@ void MainWindow::endTakeData(){
     fileOut->Close();
     delete fileOut;
 
+    // set back old Vcal value
+    printf("Set Vcal back to %d \n", old_Vcal_Dac_value);
+    cfg.setDAC(dictDac.Id("vcal"),old_Vcal_Dac_value);
 }
 
 // =============================================
