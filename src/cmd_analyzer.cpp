@@ -110,7 +110,6 @@ void ReadImage(R4sImg &map)
 	tb.Daq_Open(50000);
 
 	// prepare ADC
-	tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
 //	tb.r4s_AdcDelay(0);
 	tb.r4s_Enable(3); // slow readout
 	tb.uDelay(100);
@@ -286,7 +285,7 @@ CMD_PROC(takedata)
 	tb.Daq_Open(50000);
 
 	// prepare ADC
-	tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
+
 	tb.r4s_Enable(3); // slow readout
 	tb.uDelay(100);
 

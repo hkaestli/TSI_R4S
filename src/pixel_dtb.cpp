@@ -267,7 +267,6 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
     SetPixCal(x,y);
     std::vector<uint16_t> data;
     // programm pixel
-    SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
     prog[ 0] = 0x054321;
     r4s_SetSequence(prog);
@@ -334,7 +333,6 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
     SetPixCal(x,y);
     std::vector<uint16_t> data;
     // programm pixel
-    SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
     prog[ 0] = 0x054321;
     r4s_SetSequence(prog);

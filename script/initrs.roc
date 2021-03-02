@@ -8,7 +8,7 @@ voffset  539
 ibiasro  525 mV @ 22kOhm 20uA
 
 vfb     1250
-vprefb   881 
+vprefb   920 
 vn2      800
 vn1      730
 vn0      740
@@ -33,7 +33,7 @@ daqena 3
 
 tspan 3000
 tcal   2508
-thold  2517
+thold  2515
 
 cal 12 1
 

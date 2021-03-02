@@ -195,7 +195,6 @@ void MainWindow::GetFrame()
     tb.Daq_Open(50000); // Anzahl pixel: 42 x 22 = 924 waeren genug
 
     // prepare ADC
-    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     tb.r4s_AdcDelay(7);
     tb.r4s_Enable(roMode);
     tb.uDelay(400);
@@ -251,7 +250,6 @@ void MainWindow::on_takeData_clicked(){
             tb.Daq_Open(50000); // Anzahl pixel: 42 x 22 = 924 waeren genug
 
             // prepare ADC
-            tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
             tb.r4s_AdcDelay(7);
             tb.r4s_Enable(roMode);
             //tb.uDelay(400);
@@ -340,7 +338,6 @@ void MainWindow::onTakeDataTimeout()
     tb.Daq_Open(50000); // Anzahl pixel: 42 x 22 = 924 waeren genug
 
     // prepare ADC
-    tb.SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     tb.r4s_AdcDelay(7);
     tb.r4s_Enable(roMode);
     tb.uDelay(400);
