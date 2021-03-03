@@ -26,6 +26,11 @@
 
 #include "usb.h"
 
+enum {PXONLY, COL_RO, ROW_RO};
+
+const int NTRIG=10;
+const int READOUT=PXONLY;
+
 class CDUT
 {
 public:

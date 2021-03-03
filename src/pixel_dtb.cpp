@@ -251,10 +251,17 @@ void CTestboard::r4s_SetSeqCalScan()
 
 void CTestboard::r4s_SetSeqMeasureValue()
 {
-    vector<uint32_t> prog(3);
-    prog[ 0] = 0xe5e5e5e5;
-    prog[ 1] = 0xe5e5e5e5;
-    prog[ 2] = 0x0fe5e5;
+    vector<uint32_t> prog;
+    switch(READOUT){
+    case PXONLY:
+          prog.push_back(0x000000e5);
+        break;
+    case COL_RO:
+        break;
+    case ROW_RO:
+        break;
+    }
+
     r4s_SetSequence(prog);
 }
 
@@ -267,6 +274,7 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
     SetPixCal(x,y);
     std::vector<uint16_t> data;
     // programm pixel
+    SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
     prog[ 0] = 0x054321;
     r4s_SetSequence(prog);
@@ -291,7 +299,7 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
         SetDAC(DAC, i);
         uDelay(5000);
         // take data
-        r4s_Start();
+        for(int n=0; n<NTRIG; n++) r4s_Start();
         uDelay(3000);
         Flush();
     }
@@ -316,7 +324,7 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
                     value -= 0x1000;
             mean+=(double)value;
         }
-        mean=mean/10.0;
+        mean=mean/(double) NTRIG;
         result[i]=mean;
     }
     SetDAC(DAC, old_value);
@@ -333,6 +341,7 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
     SetPixCal(x,y);
     std::vector<uint16_t> data;
     // programm pixel
+    SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
     prog[ 0] = 0x054321;
     r4s_SetSequence(prog);
@@ -360,7 +369,7 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
             SetDAC(DAC2, j);
             uDelay(5000);
             // take data
-            r4s_Start();
+            for(int n=0; n<NTRIG; n++) r4s_Start();
             uDelay(3000);
             Flush();
         }
@@ -386,7 +395,7 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
                     value -= 0x1000;
               mean+=(double)value;
            }
-           mean=mean/10.0;
+           mean=mean/(double) NTRIG;
            result.push_back(mean);
         }
     }
