@@ -257,8 +257,19 @@ void CTestboard::r4s_SetSeqMeasureValue()
           prog.push_back(0x000000e5);
         break;
     case COL_RO:
+        prog.push_back( 0x0b25ff42 );
         break;
     case ROW_RO:
+        prog.push_back( 0x0615ff31 );
+        break;
+    case FULLCHIP:
+        prog.push_back( 0x5fff4321 );
+        prog.push_back( 0x68686721 );
+        prog.push_back( 0x68686868 );
+        prog.push_back( 0x68686868 );
+        prog.push_back( 0x68686868 );
+        prog.push_back( 0x68686868 );
+        prog.push_back( 0x00686868 );
         break;
     }
 
@@ -266,13 +277,14 @@ void CTestboard::r4s_SetSeqMeasureValue()
 }
 
 
-void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,double> &result)
+void CTestboard::DACScan(int DAC, int start, int stop, int step, std::vector<double> &result)
 {
+    result.clear();
     int old_value=GetDAC(DAC);
     int x,y;
     GetPixCal(x,y);   // could be overwritten in the mean time
     SetPixCal(x,y);
-    std::vector<uint16_t> data;
+
     // programm pixel
     SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
@@ -284,7 +296,6 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
 
     // DAC scan
     uint8_t roMode = 3;
-    Daq_Open(50000);
 
     // prepare ADC
     r4s_AdcDelay(7);
@@ -292,41 +303,66 @@ void CTestboard::DACScan(int DAC, int start, int stop, int step, std::map<int,do
     uDelay(400);
 
     r4s_SetSeqMeasureValue();
-    Daq_Start();
 
     for(int i=start; i<=stop; i+=step)
     {
+
+        Daq_Open(200000);
         SetDAC(DAC, i);
+        Daq_Start();
         uDelay(5000);
         // take data
-        for(int n=0; n<NTRIG; n++) r4s_Start();
-        uDelay(3000);
-        Flush();
-    }
-
-    Daq_Stop();
-    // stop ADC
-    r4s_Enable(0);
-    Daq_Read(data);
-    Daq_Close();
-    Flush();
-
-    int n=0;
-    double mean;
-    for(int i=start; i<=stop; i+=step)
-    {
-        mean=0.0;
-        for (int j=0; j<10; j++) {
-            int value = (int) data[n++];
-            if ((value & 0x1000) != 0) // ADC overrange
-                   value = -5000;
-            else if ((value & 0x0800) != 0) // negative
-                    value -= 0x1000;
-            mean+=(double)value;
+        for(int n=0; n<NTRIG; n++) {
+            r4s_Start();
+            uDelay(1000);
         }
-        mean=mean/(double) NTRIG;
-        result[i]=mean;
+        Flush();
+        Daq_Stop();
+        Daq_Read(data);
+        Daq_Close();
+        Flush();
+
+       index=0;
+       double mean[42*22]={0};
+       int imax=1;
+
+       for(int l=0; l<42;l++) mean[l]=0.0;
+       for (int j=0; j<NTRIG; j++) {
+          switch(READOUT){
+          case PXONLY:
+             mean[0]+=(double)NextValue();
+             break;
+          case COL_RO:
+             for(int row=0; row<22; row++){
+                int value=NextValue();
+                mean[row]+=(double) value;
+             }
+             imax=22;
+             break;
+          case ROW_RO:
+             for(int col=0; col<42; col++){
+                int value=NextValue();
+                mean[col]+=(double) value;
+             }
+             imax=42;
+             break;
+          case FULLCHIP:
+             for(int row=0; row<22; row++){
+                for(int col=0; col<42; col++){
+                   int value=NextValue();
+                   mean[col+row*42]+=(double) value;
+                }
+             }
+             imax=22*42;
+             break;
+          }
+       }
+       for(int l=0; l<imax;l++) {
+           mean[l]=mean[l]/(double) NTRIG;
+           result.push_back(mean[l]);
+       }
     }
+    r4s_Enable(0);
     SetDAC(DAC, old_value);
 }
 
@@ -339,7 +375,6 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
     int x,y;
     GetPixCal(x,y);   // could be overwritten in the mean time
     SetPixCal(x,y);
-    std::vector<uint16_t> data;
     // programm pixel
     SignalProbeADC(PROBEA_SDATA1, GAIN_1);
     vector<uint32_t> prog(1);
@@ -369,8 +404,10 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
             SetDAC(DAC2, j);
             uDelay(5000);
             // take data
-            for(int n=0; n<NTRIG; n++) r4s_Start();
-            uDelay(3000);
+            for(int n=0; n<NTRIG; n++) {
+                r4s_Start();
+                uDelay(3000);
+            }
             Flush();
         }
     }
@@ -381,22 +418,37 @@ void CTestboard::DACDACScan(int DAC1, int start1, int stop1, int step1,
     Daq_Read(data);
     Daq_Close();
     Flush();
-    int n=0;
+
+    int pxrow=y;
+    int pxcol=x;
+    index=0;
     double mean;
-    for(int i=start1; i<=stop1; i+=step1)
-    {
-        for(int j=start2; j<=stop2; j+=step2)
-        {       mean=0.0;
-           for (int k=0; k<10; k++) {
-              int value = (int) data[n++];
-              if ((value & 0x1000) != 0) // ADC overrange
-                   value = -5000;
-              else if ((value & 0x0800) != 0) // negative
-                    value -= 0x1000;
-              mean+=(double)value;
-           }
-           mean=mean/(double) NTRIG;
-           result.push_back(mean);
+    for(int i=start1; i<=stop1; i+=step1) {
+        for(int j=start2; j<=stop2; j+=step2) {
+            mean=0.0;
+            for (int j=0; j<10; j++) {
+               switch(READOUT){
+                  case PXONLY:
+                     mean+=(double)NextValue();
+                     break;
+                  case COL_RO:
+                     for(int row=0; row<22; row++){
+                        int value=NextValue();
+                        if(pxrow==row) mean+=(double) value;
+                    }
+                    break;
+                  case ROW_RO:
+                    for(int col=0; col<42; col++){
+                        int value=NextValue();
+                        if(pxcol==col) mean+=(double) value;
+                    }
+                    break;
+               default:
+                   break;
+                 }
+            }
+            mean=mean/(double) NTRIG;
+            result.push_back(mean);
         }
     }
     SetDAC(DAC1, old_value1);

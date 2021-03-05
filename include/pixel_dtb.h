@@ -16,7 +16,6 @@
 
 #include "rpc.h"
 #include "config.h"
-#include <map>
 #include <vector>
 #include "dictionary.h"
 
@@ -26,10 +25,10 @@
 
 #include "usb.h"
 
-enum {PXONLY, COL_RO, ROW_RO};
+enum {PXONLY, COL_RO, ROW_RO, FULLCHIP};
 
 const int NTRIG=10;
-const int READOUT=PXONLY;
+const int READOUT=FULLCHIP;
 
 class CDUT
 {
@@ -80,7 +79,20 @@ public:
 
 	CTestboard() { RPC_INIT rpc_io = &usb; }
 	~CTestboard() { RPC_EXIT }
-    void DACScan(int DAC, int start, int stop, int step, std::map<int,double> &result);
+
+    inline int NextValue(){
+        int value = (int) data[index++];
+        if ((value & 0x1000) != 0) // ADC overrange
+           value = -5000;
+        else if ((value & 0x0800) != 0) // negative
+            value -= 0x1000;
+        return value;
+    }
+private:
+    int index;
+    std::vector<uint16_t> data;
+public:
+    void DACScan(int DAC, int start, int stop, int step, std::vector<double> &result);
     void DACDACScan(int DAC1, int start1, int stop1, int step1,
                     int DAC2, int start2, int stop2, int step2, std::vector<double> &result);
     void SetDAC(int DAC, int value);

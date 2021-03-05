@@ -528,7 +528,7 @@ void MainWindow::on_dacscan_clicked()
     filename+="/";
     filename+=ui->filename->text();
     TFile *rootFile = new TFile(filename.toStdString().c_str(),"recreate");
-    std::map<int,double> result;
+    std::vector<double> result;
     int col_min=ui->col->text().toInt();
     int row_min=ui->row->text().toInt();
     int col_max, row_max;
@@ -542,17 +542,50 @@ void MainWindow::on_dacscan_clicked()
         row_max=row_min;
     }
     TH1D* hists[40*20];
+    TH2D ColScan("colscan","DAC scan with column readout", (stop-start)/step , (double) start, (double) stop,
+            22, 0, 22);
+    TH2D RowScan("rowscan","DAC scan with row readout", (stop-start)/step , (double) start, (double) stop,
+                 42, 0, 42);
+    int n;
     for(int col=col_min; col<=col_max; col++){
         for(int row=row_min; row<=row_max; row++){
             cfg.Activate(col, row);
             tb.SetPixCal(col,row);
             result.clear();
             tb.DACScan(DAC, start, stop, step, result);
-
+            n=0;
             hists[col*20+row]=new TH1D(Form("ph_c%02d_r%02d",col,row),Form("%s Scan Column %2d Row %2d",ui->plotname->text().toStdString().c_str(), col,row), (stop-start)/step , (double) start, (double) stop);
-            for(int i=start; i<=stop; i+=step)
-            {
-               hists[col*20+row]->Fill((double) i+step/2, result[i]);
+            for(int i=start; i<=stop; i+=step) {
+                switch(READOUT)
+                {
+                   case PXONLY:
+                      hists[col*20+row]->Fill((double) i+step/2, result[n++]);
+                      break;
+                   case COL_RO:
+                      for(int irow=0; irow<22; irow++){
+                         double value= result[n++];
+                         ColScan.Fill((double) i+step/2, irow, value);
+                         if(irow==row) hists[col*20+row]->Fill((double) i+step/2, value);
+                      }
+                      break;
+                   case ROW_RO:
+                      for(int icol=0; icol<42; icol++){
+                         double value= result[n++];
+                         RowScan.Fill((double) i+step/2, icol, value);
+                         if(icol==col) hists[col*20+row]->Fill((double) i+step/2, value);
+                      }
+                      break;
+                   case FULLCHIP:
+                      for(int irow=0; irow<22; irow++){
+                         for(int icol=0; icol<42; icol++){
+                            double value= result[n++];
+                            if(irow==row) RowScan.Fill((double) i+step/2, icol, value);
+                            if(icol==35) ColScan.Fill((double) i+step/2, irow, value);
+                            if(icol==col && irow==row) hists[col*20+row]->Fill((double) i+step/2, value);
+                         }
+                      }
+                      break;
+                }
             }
         }
     }
@@ -593,7 +626,7 @@ void MainWindow::on_dacscan_2_clicked()
          col_max=col_min;
          row_max=row_min;
      }
-     TH2D* hists[40*20];
+     TH2D* hists[40*20]={nullptr};
      int nbins1=(stop1-start1)/step1+1;
      int nbins2=(stop2-start2)/step2+1;
      for(int col=col_min; col<=col_max; col++){
@@ -619,6 +652,7 @@ void MainWindow::on_dacscan_2_clicked()
      }
      rootFile->Write();
      rootFile->Close();
+     for(int n=0; n<20*40; n++) if(hists[n]) delete hists[n];
      delete rootFile;
 
 }

@@ -218,7 +218,7 @@ CMD_PROC(yscan)
 
 CMD_PROC(dacscan)
 {
-    std::map<int,double> result;
+    std::vector<double> result;
     int DAC,start, stop, step;
     PAR_INT(DAC, 0, 21);
     PAR_INT(start, 0, 10000);
@@ -226,9 +226,30 @@ CMD_PROC(dacscan)
     PAR_INT(step, -10000, 10000 );
     tb.DACScan(DAC, start, stop, step, result);
 
-    for(int i=start; i<=stop; i+=step)
-    {
-        printf("%f\n",result[i]);
+    int n=0;
+    for(int i=start; i<=stop; i+=step) {
+       switch(READOUT){
+       case PXONLY:
+             printf("%d : %f\n",i, result[n++]);
+             break;
+       case COL_RO:
+             for(int row=0; row<22; row++){
+                printf("%d : row %d : %f\n",i, row, result[n++]);
+            }
+            break;
+       case ROW_RO:
+             for(int col=0; col<42; col++){
+                printf("%d : column %d : %f\n",i, col, result[n++]);
+             }
+             break;
+       case FULLCHIP:
+             for(int row=0; row<22; row++){
+                for(int col=0; col<42; col++){
+                   printf("%d : col/row %d / %d : %f\n",i, col, row, result[n++]);
+                }
+             }
+             break;
+       }
     }
 }
 
